@@ -12,11 +12,12 @@
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
 
-    <zeebe.version>8.1.4</zeebe.version>
-    <connector-core.version>0.4.0</connector-core.version>
-    <connector-validation.version>0.4.0</connector-validation.version>
+    <zeebe.version>8.2.0</zeebe.version>
+    <zeebe-client.version>8.2.4</zeebe-client.version>
+    <connector-core.version>0.9.0</connector-core.version>
+    <connector-validation.version>0.9.0</connector-validation.version>
 
-    <cherry.version>2.3.0</cherry.version>
+    <cherry.version>3.0.0</cherry.version>
     <filestorage.version>1.1.1</filestorage.version>
 
 
@@ -34,7 +35,7 @@
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-client-java</artifactId>
-      <version>${zeebe.version}</version>
+      <version>${zeebe-client.version}</version>
     </dependency>
 
 
