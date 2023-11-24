@@ -14,7 +14,7 @@
 
     <zeebe.version>8.2.0</zeebe.version>
     <zeebe-client.version>8.2.4</zeebe-client.version>
-    <connector-core.version>0.9.0</connector-core.version>
+    <connector-core.version>8.3.1</connector-core.version>
     <connector-validation.version>0.9.0</connector-validation.version>
 
     <cherry.version>3.0.0</cherry.version>
