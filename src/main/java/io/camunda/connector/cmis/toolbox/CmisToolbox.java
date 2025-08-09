@@ -1,4 +1,4 @@
-package io.camunda.connector.cmis;
+package io.camunda.connector.cmis.toolbox;
 
 import com.google.gson.Gson;
 
@@ -12,7 +12,7 @@ public class CmisToolbox {
    * @throws Exception
    */
   public static Object getCmisConnection(String cmisConnectionString) throws Exception {
-  String valueInJson = cmisConnectionString.toString();
+  String valueInJson = cmisConnectionString;
   valueInJson = valueInJson.replace("\\\"", "\"");
 
       try {

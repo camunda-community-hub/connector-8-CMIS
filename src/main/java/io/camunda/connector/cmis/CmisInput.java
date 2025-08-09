@@ -1,8 +1,13 @@
 package io.camunda.connector.cmis;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.cherrytemplate.CherryInput;
 import io.camunda.connector.cmis.toolbox.ParameterToolbox;
+import io.camunda.connector.cmis.toolbox.CmisError;
+import io.camunda.filestorage.FileVariable;
+import io.camunda.filestorage.storage.StorageDefinition;
+
 
 import java.util.List;
 import java.util.Map;
@@ -20,18 +25,22 @@ public class CmisInput implements CherryInput {
   private String cmisFunction;
 
   public static final String INPUT_CMIS_CONNECTION = "cmisConnection";
-  public String cmisConnection;
+  public Object cmisConnection;
 
   public static final String INPUT_FOLDER_PATH = "folderPath";
   public String folderPath;
 
-  public static final String INPUT_FOLDER_NAME = "folderName";
+  public static final String FOLDER_NAME = "folderName";
   public String folderName;
-  public static final String INPUT_RECURSIVE_NAME = "recursiveName";
+
+
+  public static final String RECURSIVE_NAME = "recursiveName";
   public Boolean recursiveName;
 
-  public static final String INPUT_FOLDER_CMIS_TYPE = "folderCmisType";
-  public String folderCmisType;
+
+
+  public static final String OUTPUT_FILE_STORAGE = "outputFileStorage";
+  public String outputFileStorage;
 
   public static final String INPUT_ERROR_IF_NOT_EXIST = "ErrorIfNotExist";
   public Boolean errorIfNotExist;
@@ -40,11 +49,87 @@ public class CmisInput implements CherryInput {
   public String folderId;
 
 
+  /**
+   * Upload file
+   */
+  public static final String INPUT_FILE_STORAGE = "inputFileStorage";
+  public Object inputFileStorage;
+
+  public static final String ABSOLUTE_FOLDER_NAME = "absoluteFolderName";
+  public String absoluteFolderName;
+
+  public static final String DOCUMENT_NAME = "documentName";
+  public String documentName;
+
+  public static final String CMIS_TYPE = "cmisType";
+  public static final String CMIS_TYPE_V_CMIS_DOCUMENT = "cmis:document";
+  public String cmisType;
+
+  public static final String INPUT_IMPORT_POLICY = "importPolicy";
+  public static final String INPUT_IMPORT_POLICY_V_NEW_DOCUMENT = "NEW_DOCUMENT";
+  public static final String INPUT_IMPORT_POLICY_V_NEW_VERSION = "NEW_VERSION";
+  public String importPolicy;
+
+  public static final String INPUT_VERSION_LABEL = "versionLabel";
+  public String versionLabel;
+
+  /**
+   * Download file
+   */
+
+  public static final String INPUT_SOURCE_OBJECT = "sourceObject";
+  public static final String INPUT_SOURCE_OBJECT_V_ID = "objectId";
+  public static final String INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME = "absolutePathName";
+  public static final String INPUT_SOURCE_OBJECT_V_FOLDERCONTENT = "folderContent";
+  public String sourceObject;
+
+
+  public static final String INPUT_CMIS_OBJECT_ID = "cmisObjectId";
+  String cmisObjectId;
+
+  //   public static final String ABSOLUTE_FOLDER_NAME = "absoluteFolderName";
+
+
+  public static final String INPUT_FILTER = "filter";
+  public String filter;
+
+  public String getSourceObject() {
+    return sourceObject;
+  }
+
+  public String getFilter() {
+    return filter;
+  }
+
+  public String getVersionLabel() {
+    return versionLabel;
+  }
+
+  public Object getInputFileStorage() {
+    return inputFileStorage;
+  }
+
+  public String getImportPolicy() {
+    return importPolicy;
+  }
+
+  public String getAbsoluteFolderName() {
+    return absoluteFolderName;
+  }
+
+  public String getDocumentName() {
+    return documentName;
+  }
+
+  public String getCmisType() {
+      return cmisType==null || cmisType.trim().isEmpty()? CMIS_TYPE_V_CMIS_DOCUMENT : cmisType;
+  }
+
   public String getCmisFunction() {
     return cmisFunction;
   }
 
-  public String getCmisConnection() {
+  public Object getCmisConnection() {
     return cmisConnection;
   }
 
@@ -60,12 +145,17 @@ public class CmisInput implements CherryInput {
     return recursiveName;
   }
 
-  public String getFolderCmisType() {
-    return folderCmisType;
-  }
 
   public String getFolderId() {
     return folderId;
+  }
+
+  public String getCmisObjectId() {
+    return cmisObjectId;
+  }
+
+  public String getOutputFileStorage() {
+    return outputFileStorage;
   }
 
   public Boolean getErrorIfNotExist() {
@@ -134,4 +224,26 @@ public class CmisInput implements CherryInput {
   }
   */
   }
+
+  public FileVariable initializeOutputFileVariable(String fileName) throws ConnectorException {
+    StorageDefinition storageOutputDefinition;
+    try {
+      storageOutputDefinition = StorageDefinition.getFromString(outputFileStorage);
+    } catch (ConnectorException ce) {
+      throw ce;
+    } catch (Exception e) {
+      throw new ConnectorException(CmisError.BAD_STORAGE_DEFINITION, e.getMessage());
+    }
+
+
+    FileVariable fileVariable = new FileVariable();
+
+    fileVariable.setStorageDefinition(storageOutputDefinition);
+    fileVariable.setName(fileName);
+    fileVariable.setMimeType("text/csv");
+    return fileVariable;
+  }
+
+
+
 }

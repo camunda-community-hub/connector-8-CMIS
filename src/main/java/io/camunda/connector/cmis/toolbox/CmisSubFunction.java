@@ -5,8 +5,6 @@ import io.camunda.connector.api.outbound.OutboundConnectorContext;
 import io.camunda.connector.cherrytemplate.RunnerParameter;
 import io.camunda.connector.cmis.CmisInput;
 import io.camunda.connector.cmis.CmisOutput;
-import io.camunda.connector.pdf.PdfInput;
-import io.camunda.connector.pdf.PdfOutput;
 import io.camunda.filestorage.cmis.CmisConnection;
 
 import java.util.List;

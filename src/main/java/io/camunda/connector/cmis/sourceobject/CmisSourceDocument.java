@@ -1,18 +1,16 @@
-package io.camunda.connector.cmis.listobjects;
+package io.camunda.connector.cmis.sourceobject;
 
-import io.camunda.connector.cmis.sourceobject.CmisSourceObjectInt;
-
-public class ListCmisObjectInput implements CmisSourceObjectInt {
+public class CmisSourceDocument implements CmisSourceObjectInt {
 
   public static final String INPUT_CMIS_CONNECTION = "cmisConnection";
-
-  // constant attached to this properties is defined in CmisSourceObjectInt
-
   String sourceObject;
   String cmisObjectId;
   String cmisAbsolutePathName;
   String filter;
 
+  public static final String INPUT_STORAGE_DEFINITION = "storageDefinition";
+
+  String storageDefinition;
 
   String cmisConnection;
 
@@ -30,6 +28,10 @@ public class ListCmisObjectInput implements CmisSourceObjectInt {
 
   public String getCmisAbsolutePathName() {
     return cmisAbsolutePathName;
+  }
+
+  public String getStorageDefinition() {
+    return storageDefinition;
   }
 
   public String getCmisConnection() {

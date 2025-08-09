@@ -1,65 +1,79 @@
 package io.camunda.connector.cmis.listobjects;
 
-import io.camunda.connector.cmis.CmisCherryToolbox;
-import io.camunda.connector.cmis.CmisToolbox;
+import io.camunda.connector.cherrytemplate.RunnerParameter;
+import io.camunda.connector.cmis.CmisInput;
+import io.camunda.connector.cmis.CmisOutput;
 import io.camunda.connector.cmis.sourceobject.CmisSourceAccess;
-import io.camunda.connector.cmis.sourceobject.CmisSourceObjectInt;
-import io.camunda.connector.api.annotation.OutboundConnector;
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
 import io.camunda.connector.cmis.toolbox.CmisSubFunction;
 import io.camunda.filestorage.cmis.CmisConnection;
-import io.camunda.filestorage.cmis.CmisFactoryConnection;
-import io.camunda.filestorage.cmis.CmisParameters;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
 
+import java.util.Collections;
 import java.util.List;
-
-@OutboundConnector(name = ListCmisObjectFunction.NAME_CMIS_LISTOBJECTS, inputVariables = {
-    ListCmisObjectInput.INPUT_CMIS_CONNECTION, CmisSourceObjectInt.INPUT_SOURCE_OBJECT,
-    CmisSourceObjectInt.INPUT_CMIS_OBJECTID, CmisSourceObjectInt.INPUT_CMIS_ABSOLUTE_PATH_NAME,
-    CmisSourceObjectInt.INPUT_FILTER, }, type = ListCmisObjectFunction.TYPE_CMIS_LISTOBJECTS)
+import java.util.Map;
 
 public class ListCmisObjectFunction  implements CmisSubFunction  {
 
   public static final String TYPE_CMIS_LISTOBJECTS = "c-cmis-listobjects";
   public static final String NAME_CMIS_LISTOBJECTS = "CMIS: List objects";
 
-  public ListCmisObjectOutput execute(OutboundConnectorContext context) throws Exception {
-    ListCmisObjectInput cmisInput = context.getVariablesAsType(ListCmisObjectInput.class);
+  @Override
+  public CmisOutput executeSubFunction(CmisConnection cmisConnection,
+                                       CmisInput cmisInput,
+                                       OutboundConnectorContext context) throws ConnectorException {
 
-    CmisConnection cmisConnection;
-    try {
-      CmisParameters cmisParameters = CmisParameters.getCodingConnection(
-          CmisToolbox.getCmisConnection(cmisInput.cmisConnection));
-
-      cmisConnection = CmisFactoryConnection.getInstance().getCmisConnection(cmisParameters);
-    } catch (Exception e) {
-      throw new ConnectorException(CmisCherryToolbox.NO_CONNECTION_TO_CMIS.getCode(), "No connection");
-    }
-
-    ListCmisObjectOutput listCmisObjectOutput = new ListCmisObjectOutput();
+  CmisOutput cmisOutput = new CmisOutput();
 
     List<CmisObject> listOfCmisObject = CmisSourceAccess.getCmisSourceObject(cmisConnection, cmisInput);
     if (listOfCmisObject == null)
-      return listCmisObjectOutput;
+      return cmisOutput;
 
     for (CmisObject cmisObject : listOfCmisObject) {
-      listCmisObjectOutput.listCmisObject.add(createDescription(cmisObject));
+      cmisOutput.listCmisObject.add(createDescription(cmisObject));
     }
 
-    return listCmisObjectOutput;
+    return cmisOutput;
+  }
+  @Override
+  public List<RunnerParameter> getInputsParameter() {
+    return Collections.emptyList();
   }
 
+  @Override
+  public List<RunnerParameter> getOutputsParameter() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public Map<String, String> getBpmnErrors() {
+    return Map.of();
+  }
+
+  @Override
+  public String getSubFunctionName() {
+    return "ListObjects";
+  }
+
+  @Override
+  public String getSubFunctionDescription() {
+    return "List all objects found in a folder";
+  }
+
+  @Override
+  public String getSubFunctionType() {
+    return "list-objects";
+  }
   /**
    * Create a description from a CmisObject
    *
    * @param cmisObject the source object
    * @return the description
    */
-  private ListCmisObjectOutput.CmisObjectDescription createDescription(CmisObject cmisObject) {
-    ListCmisObjectOutput.CmisObjectDescription description = new ListCmisObjectOutput.CmisObjectDescription();
+  private CmisOutput.CmisObjectDescription createDescription(CmisObject cmisObject) {
+    CmisOutput.CmisObjectDescription description = new CmisOutput.CmisObjectDescription();
 
     description.id = cmisObject.getId();
     description.name = cmisObject.getName();

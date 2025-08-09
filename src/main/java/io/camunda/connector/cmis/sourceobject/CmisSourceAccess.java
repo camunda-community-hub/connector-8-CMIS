@@ -1,6 +1,7 @@
 package io.camunda.connector.cmis.sourceobject;
 
 import io.camunda.connector.api.error.ConnectorException;
+import io.camunda.connector.cmis.CmisInput;
 import io.camunda.filestorage.cmis.CmisConnection;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -26,30 +27,29 @@ public class CmisSourceAccess {
    * Constant are declared at this level
    */
 
-  public static List<CmisObject> getCmisSourceObject(CmisConnection cmisConnection, CmisSourceObjectInt sourceObject)
+  public static List<CmisObject> getCmisSourceObject(CmisConnection cmisConnection, CmisInput cmisInput)
       throws ConnectorException {
-    if (CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ID.equals(sourceObject.getSourceObject())) {
-      return List.of(cmisConnection.getObjectById(sourceObject.getCmisObjectId()));
-    } else if (CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME.equals(sourceObject.getSourceObject())) {
-      return List.of(cmisConnection.getObjectByPath(sourceObject.getCmisAbsolutePathName()));
-    } else if (CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_FOLDERCONTENT.equals(sourceObject.getSourceObject())) {
-      CmisObject cmisObject = cmisConnection.getObjectByPath(sourceObject.getCmisAbsolutePathName());
+    if (CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ID.equals(cmisInput.getSourceObject())) {
+      return List.of(cmisConnection.getObjectById(cmisInput.getCmisObjectId()));
+    } else if (CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME.equals(cmisInput.getSourceObject())) {
+      return List.of(cmisConnection.getObjectByPath(cmisInput.getAbsoluteFolderName()));
+    } else if (CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_FOLDERCONTENT.equals(cmisInput.getSourceObject())) {
+      CmisObject cmisObject = cmisConnection.getObjectByPath(cmisInput.getAbsoluteFolderName());
 
       // use the filter. If the object is a folder, get the contents
-
       if (!(cmisObject instanceof Folder))
-        throw new ConnectorException(ERROR_NOT_A_FOLDER,"Folder [" + sourceObject.getCmisAbsolutePathName()
+        throw new ConnectorException(ERROR_NOT_A_FOLDER,"Folder [" + cmisInput.getAbsoluteFolderName()
             + "] is not a folder - parameter folderName and documentName implie folder is a Folder");
       List<CmisObject> listOfCmisObject = new ArrayList<>();
       Folder folder = (Folder) cmisObject;
       final ItemIterable<CmisObject> documents = folder.getChildren();
       Pattern pattern = null;
-      if (!sourceObject.getFilter().trim().isEmpty()) {
+      if (!cmisInput.getFilter().trim().isEmpty()) {
         try {
 
-          pattern = Pattern.compile(sourceObject.getFilter());
+          pattern = Pattern.compile(cmisInput.getFilter());
         } catch (Exception e) {
-          throw new ConnectorException(ERROR_BAD_EXPRESSION,"Bad regex expression [" + sourceObject.getFilter()+"]");
+          throw new ConnectorException(ERROR_BAD_EXPRESSION,"Bad regex expression [" + cmisInput.getFilter()+"]");
 
         }
       }
@@ -62,8 +62,8 @@ public class CmisSourceAccess {
       }
       return listOfCmisObject;
     } else {
-      logger.error("CmisSourceAccess : unknown type["+sourceObject.getSourceObject()+"]");
-      throw new ConnectorException(ERROR_UNKNOWN_TYPE, "unknown type["+sourceObject.getSourceObject()+"]");
+      logger.error("CmisSourceAccess : unknown type[{}]",cmisInput.getSourceObject());
+      throw new ConnectorException(ERROR_UNKNOWN_TYPE, "unknown type["+cmisInput.getSourceObject()+"]");
     }
   }
 }

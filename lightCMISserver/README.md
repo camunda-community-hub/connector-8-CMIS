@@ -2,7 +2,7 @@
 
 # Introduction
 This server is started in a docker image.
-The soyurce is available here
+The source is available here
 https://hub.docker.com/r/exoplatform/lightweightcmisserver
 
 # pull the image

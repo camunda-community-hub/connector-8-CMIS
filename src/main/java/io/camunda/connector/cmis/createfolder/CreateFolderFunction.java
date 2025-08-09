@@ -9,10 +9,10 @@ package io.camunda.connector.cmis.createfolder;
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
 import io.camunda.connector.cherrytemplate.RunnerParameter;
-import io.camunda.connector.cmis.CmisFunction;
 import io.camunda.connector.cmis.CmisInput;
 import io.camunda.connector.cmis.CmisOutput;
 import io.camunda.connector.cmis.toolbox.CmisSubFunction;
+import io.camunda.connector.cmis.toolbox.CmisError;
 import io.camunda.filestorage.cmis.CmisConnection;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 public class CreateFolderFunction implements CmisSubFunction {
 
   public CreateFolderFunction() {
+    // No special to add here
   }
 
   @Override
@@ -40,9 +41,9 @@ public class CreateFolderFunction implements CmisSubFunction {
       // is managed after
     }
     if (parentFolder == null)
-      throw new ConnectorException(CmisFunction.BPMNERROR_INVALID_PARENT, "Can't find [" + parentFolderPath + "] ");
+      throw new ConnectorException(CmisError.BPMNERROR_INVALID_PARENT, "Can't find [" + parentFolderPath + "] ");
 
-    String cmisType = cmisInput.getFolderCmisType();
+    String cmisType = cmisInput.getCmisType();
     if (cmisType == null || cmisType.isEmpty())
       cmisType = "cmis:folder";
     Boolean recursiveName = cmisInput.getRecursiveName();
@@ -60,7 +61,7 @@ public class CreateFolderFunction implements CmisSubFunction {
           folderCreated = parentFolder.createFolder(properties);
           parentFolder = folderCreated;
         } catch (Exception e) {
-          throw new ConnectorException(CmisFunction.BPMNERROR_FOLDER_CREATION,
+          throw new ConnectorException(CmisError.BPMNERROR_FOLDER_CREATION,
               "Folder[" + currentFolderName + "] in [" + folderName + "] :" + e.getCause() + " " + e.getMessage());
         }
       }
@@ -72,12 +73,12 @@ public class CreateFolderFunction implements CmisSubFunction {
       try {
         folderCreated = parentFolder.createFolder(properties);
       } catch (Exception e) {
-        throw new ConnectorException(CmisFunction.BPMNERROR_FOLDER_CREATION,
+        throw new ConnectorException(CmisError.BPMNERROR_FOLDER_CREATION,
             "Folder[" + folderName + "] :" + e.getCause() + " " + e.getMessage());
       }
     }
     if (folderCreated == null)
-      throw new ConnectorException(CmisFunction.BPMNERROR_FOLDER_CREATION, "Folder name is empty");
+      throw new ConnectorException(CmisError.BPMNERROR_FOLDER_CREATION, "Folder name is empty");
 
     CmisOutput cmisOutput = new CmisOutput();
     cmisOutput.folderId = folderCreated.getId();
@@ -88,14 +89,14 @@ public class CreateFolderFunction implements CmisSubFunction {
   public List<RunnerParameter> getInputsParameter() {
     return List.of(new RunnerParameter(CmisInput.INPUT_FOLDER_PATH, "Parent Folder Path", String.class,
             RunnerParameter.Level.REQUIRED, "Folder path where folder will be created"),
-        new RunnerParameter(CmisInput.INPUT_FOLDER_CMIS_TYPE, "Folder CMIS Type", String.class,
+        new RunnerParameter(CmisInput.CMIS_TYPE, "Folder CMIS Type", String.class,
             RunnerParameter.Level.OPTIONAL, "When an CMIS object is created, a type is assigned") //
             .setDefaultValue("cmis:folder"), //
-        new RunnerParameter(CmisInput.INPUT_RECURSIVE_NAME, "Recursive Name", Boolean.class,
+        new RunnerParameter(CmisInput.RECURSIVE_NAME, "Recursive Name", Boolean.class,
             RunnerParameter.Level.OPTIONAL, "Recursive name: folder name can contains '/'") //
             .setVisibleInTemplate() //
             .setDefaultValue(Boolean.FALSE),//
-        new RunnerParameter(CmisInput.INPUT_FOLDER_NAME, "Folder Name", String.class, RunnerParameter.Level.REQUIRED,
+        new RunnerParameter(CmisInput.FOLDER_NAME, "Folder Name", String.class, RunnerParameter.Level.REQUIRED,
             "Folder name to be created."));
   }
 
@@ -108,8 +109,8 @@ public class CreateFolderFunction implements CmisSubFunction {
 
   @Override
   public Map<String, String> getBpmnErrors() {
-    return Map.of(CmisFunction.BPMNERROR_FOLDER_CREATION, CmisFunction.BPMNERROR_FOLDER_CREATION_EXPL,
-        CmisFunction.BPMNERROR_INVALID_PARENT, CmisFunction.BPMNERROR_INVALID_PARENT_EXPL);
+    return Map.of(CmisError.BPMNERROR_FOLDER_CREATION, CmisError.BPMNERROR_FOLDER_CREATION_EXPL,
+            CmisError.BPMNERROR_INVALID_PARENT, CmisError.BPMNERROR_INVALID_PARENT_EXPL);
 
   }
 
@@ -118,7 +119,6 @@ public class CreateFolderFunction implements CmisSubFunction {
     return "CreateFolder";
   }
 
-  ;
 
   @Override
   public String getSubFunctionDescription() {

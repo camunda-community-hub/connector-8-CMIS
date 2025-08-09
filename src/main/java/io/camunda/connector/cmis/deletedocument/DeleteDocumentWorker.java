@@ -6,55 +6,59 @@
 /* ******************************************************************** */
 package io.camunda.connector.cmis.deletedocument;
 
-import io.camunda.connector.cmis.CmisCherryToolbox;
+import io.camunda.connector.api.error.ConnectorException;
+import io.camunda.connector.api.outbound.OutboundConnectorContext;
+import io.camunda.connector.cherrytemplate.RunnerParameter;
+import io.camunda.connector.cmis.CmisInput;
+import io.camunda.connector.cmis.CmisOutput;
 import io.camunda.connector.cmis.toolbox.CmisSubFunction;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
-import io.camunda.cherry.definition.AbstractWorker;
-import org.springframework.stereotype.Component;
+import io.camunda.filestorage.cmis.CmisConnection;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-@Component
 public class DeleteDocumentWorker implements CmisSubFunction {
 
     public DeleteDocumentWorker() {
-        super("c-cmis-deletedocument",
-                Arrays.asList(
-                    CmisCherryToolbox.CmisConnectionParameter
-                ),
-                Collections.emptyList(),
-                Arrays.asList(CmisCherryToolbox.NO_CONNECTION_TO_CMIS));
+    }
+    @Override
+    public CmisOutput executeSubFunction(CmisConnection cmisConnection,
+                                         CmisInput cmisInput,
+                                         OutboundConnectorContext context) throws ConnectorException {
+        return new CmisOutput();
+
     }
 
     @Override
-    public String getName() {
-        return "CMIS: Delete a document or a version";
+    public List<RunnerParameter> getInputsParameter() {
+
+        return Collections.emptyList();
     }
     @Override
-    public String getDescription() {
-        return "Delete a document in the CMIS repository, or a version in the document";
+    public List<RunnerParameter> getOutputsParameter() {
+
+        return Collections.emptyList();
+    }
+    public Map<String, String> getBpmnErrors() {
+        return Collections.emptyMap();
+
     }
 
     @Override
-    public String getLogo() {
-        return CmisCherryToolbox.getLogo();
+    public String getSubFunctionName() {
+        return "DeleteDocument";
+    }
+
+
+    @Override
+    public String getSubFunctionDescription() {
+        return "Delete a document";
     }
 
     @Override
-    public String getCollectionName() {
-        return CmisCherryToolbox.getCollectionName();
+    public String getSubFunctionType() {
+        return "delete-document";
     }
-
-    /**
-     * @param jobClient        client
-     * @param activatedJob     job activated
-     * @param contextExecution context of this execution
-     */
-    @Override
-    public void execute(final JobClient jobClient, final ActivatedJob activatedJob, AbstractWorker.ContextExecution contextExecution) {
-    }
-
 
 }
