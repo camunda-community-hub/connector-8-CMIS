@@ -24,7 +24,7 @@ import java.util.Map;
 public class DownloadDocumentFunction  implements CmisSubFunction {
 
   public static final String NAME_CMIS_DOWNLOAD_DOCUMENT = "CMIS: Download document";
-  public static final String TYPE_CMIS_DOWNLOAD_DOCUMENT = "c-cmis-downloaddocument";
+  public static final String TYPE_CMIS_DOWNLOAD_DOCUMENT = "download-document";
 
 
   @Override

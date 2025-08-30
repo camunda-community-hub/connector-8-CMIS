@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ListCmisObjectFunction  implements CmisSubFunction  {
 
-  public static final String TYPE_CMIS_LISTOBJECTS = "c-cmis-listobjects";
+  public static final String TYPE_CMIS_LISTOBJECTS = "list-objects";
   public static final String NAME_CMIS_LISTOBJECTS = "CMIS: List objects";
 
   @Override
