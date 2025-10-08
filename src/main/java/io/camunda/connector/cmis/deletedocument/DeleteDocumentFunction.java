@@ -1,4 +1,10 @@
-package io.camunda.connector.cmis.listobjects;
+/* ******************************************************************** */
+/*   DeleteDocumentFunction                                                                   */
+/*                                                                      */
+/*  Delete a document, or a version in a document                                                   */
+/*                                                                      */
+/* ******************************************************************** */
+package io.camunda.connector.cmis.deletedocument;
 
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
@@ -19,29 +25,38 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ListCmisObjectFunction implements CmisSubFunction {
-    public static final String TYPE_CMIS_LISTOBJECTS = "list-objects";
-    public static final String NAME_CMIS_LISTOBJECTS = "CMIS: List objects";
-    public static final String TYPE_CMIS_LIST_OBJECTS = "list-objects";
-    private final Logger logger = LoggerFactory.getLogger(ListCmisObjectFunction.class.getName());
+public class DeleteDocumentFunction implements CmisSubFunction {
+    private final Logger logger = LoggerFactory.getLogger(DeleteDocumentFunction.class.getName());
+
+    public DeleteDocumentFunction() {
+        // No special to add here
+    }
 
     @Override
     public CmisOutput executeSubFunction(CmisConnection cmisConnection,
                                          CmisInput cmisInput,
                                          OutboundConnectorContext context) throws ConnectorException {
-
         CmisOutput cmisOutput = new CmisOutput();
+        List<CmisObject> listCmisObject = CmisSourceAccess.getCmisSourceObject(cmisConnection, cmisInput);
+        Boolean errorIfNotExist = cmisInput.getErrorIfNotExist();
 
-        List<CmisObject> listOfCmisObject = CmisSourceAccess.getCmisSourceObject(cmisConnection, cmisInput);
-        if (listOfCmisObject == null)
-            return cmisOutput;
-        StringBuilder listObjectsToLog = new StringBuilder();
-        for (CmisObject cmisObject : listOfCmisObject) {
-            cmisOutput.listCmisObject.add(CmisToolbox.createDescription(cmisObject));
-            listObjectsToLog.append(cmisObject.getId() + ",");
+        StringBuilder documentDeletedToLog = new StringBuilder();
+        // First, check that all objects get a path
+        for (CmisObject cmisObject : listCmisObject) {
+            boolean deletionOk = cmisConnection.deleteObjectById(cmisObject.getId());
+            documentDeletedToLog.append(cmisObject.getId()).append(": Deletion? ").append(deletionOk).append(",");
+            if (!deletionOk && errorIfNotExist) {
+                throw new ConnectorException(CmisError.DOCUMENT_NOT_EXIST,
+                        "Document with id[" + cmisObject.getId() + "] does not exist");
+
+            }
+            if (deletionOk) {
+                cmisOutput.listCmisObject.add(CmisToolbox.createDescription(cmisObject));
+            }
         }
-        logger.info("List documents [{}]", listObjectsToLog);
+        logger.info("Documents deleted [{}]", documentDeletedToLog);
         return cmisOutput;
+
     }
 
     @Override
@@ -71,7 +86,13 @@ public class ListCmisObjectFunction implements CmisSubFunction {
                 RunnerParameter.getInstance(CmisInput.FILTER, "Filter to select files", String.class, // class
                         RunnerParameter.Level.OPTIONAL, // level
                         "Give a filter to select a dedicated file")// explanation
-        );
+                ,
+
+                RunnerParameter.getInstance(CmisInput.ERROR_IF_NOT_EXIST, "Error if not exist", Boolean.class,
+                                RunnerParameter.Level.OPTIONAL, "Throw a BPMN Error if the object does not exist") //
+                        .setDefaultValue(Boolean.FALSE) //
+                        .setVisibleInTemplate());
+
     }
 
     @Override
@@ -82,9 +103,8 @@ public class ListCmisObjectFunction implements CmisSubFunction {
                         "List of ID of CMIS Object deleted"));
     }
 
-    @Override
     public Map<String, String> getBpmnErrors() {
-        return Map.of(
+        return Map.of(CmisError.DOCUMENT_NOT_EXIST, CmisError.DOCUMENT_NOT_EXIST_EXPLANATION,
                 CmisError.BAD_EXPRESSION, CmisError.BAD_EXPRESSION_EXPLANATION,
                 CmisError.NOT_A_FOLDER, CmisError.NOT_A_FOLDER_EXPLANATION,
                 CmisError.UNKNOWN_TYPE, CmisError.UNKNOWN_TYPE_EXPLANATION,
@@ -94,17 +114,18 @@ public class ListCmisObjectFunction implements CmisSubFunction {
 
     @Override
     public String getSubFunctionName() {
-        return "ListObjects";
+        return "DeleteDocument";
     }
+
 
     @Override
     public String getSubFunctionDescription() {
-        return "List all objects found in a folder";
+        return "Delete a document";
     }
 
     @Override
     public String getSubFunctionType() {
-        return TYPE_CMIS_LIST_OBJECTS;
+        return "delete-document";
     }
 
 }

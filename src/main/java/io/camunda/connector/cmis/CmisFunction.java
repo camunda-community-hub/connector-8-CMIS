@@ -13,9 +13,10 @@ import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
 import io.camunda.connector.api.outbound.OutboundConnectorFunction;
 import io.camunda.connector.cherrytemplate.CherryConnector;
+import io.camunda.connector.cmis.checkconnection.CheckConnectionFunction;
 import io.camunda.connector.cmis.createfolder.CreateFolderFunction;
-import io.camunda.connector.cmis.deletedocument.DeleteDocumentWorker;
-import io.camunda.connector.cmis.deletefolder.DeleteFolderWorker;
+import io.camunda.connector.cmis.deletedocument.DeleteDocumentFunction;
+import io.camunda.connector.cmis.deletefolder.DeleteFolderFunction;
 import io.camunda.connector.cmis.download.DownloadDocumentFunction;
 import io.camunda.connector.cmis.listobjects.ListCmisObjectFunction;
 import io.camunda.connector.cmis.toolbox.CmisError;
@@ -32,65 +33,70 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @OutboundConnector(name = "CMISFunction", inputVariables = {
-        CmisInput.INPUT_CMIS_FUNCTION,
-        CmisInput.INPUT_CMIS_CONNECTION,
-        CmisInput.INPUT_FOLDER_PATH,
+        CmisInput.CMIS_FUNCTION,
+        CmisInput.CMIS_CONNECTION,
+        CmisInput.FOLDER_PATH,
         CmisInput.FOLDER_NAME,
         CmisInput.RECURSIVE_NAME,
         CmisInput.CMIS_TYPE,
         CmisInput.RECURSIVE_NAME,
-        CmisInput.OUTPUT_FILE_STORAGE,
-        CmisInput.INPUT_ERROR_IF_NOT_EXIST,
-        CmisInput.INPUT_FOLDER_ID,
-        CmisInput.INPUT_FILE_STORAGE,
+        CmisInput.UPLOAD_FOLDER_NAME,
+        CmisInput.JSON_STORAGE_DEFINITION,
+        CmisInput.STORAGE_DEFINITION,
+        CmisInput.STORAGE_DEFINITION_FOLDER_COMPLEMENT,
+        CmisInput.STORAGE_DEFINITION_CMIS_COMPLEMENT,
+        CmisInput.ERROR_IF_NOT_EXIST,
+        CmisInput.FOLDER_ID,
+        CmisInput.SOURCE_FILE,
         CmisInput.ABSOLUTE_FOLDER_NAME,
         CmisInput.DOCUMENT_NAME,
         CmisInput.CMIS_TYPE,
-        CmisInput.INPUT_IMPORT_POLICY,
-        CmisInput.INPUT_VERSION_LABEL,
-        CmisInput.INPUT_SOURCE_OBJECT,
-        CmisInput.INPUT_CMIS_OBJECT_ID,
-        CmisInput.INPUT_FILTER
+        CmisInput.IMPORT_POLICY,
+        CmisInput.VERSION_LABEL,
+        CmisInput.SOURCE_OBJECT,
+        CmisInput.CMIS_OBJECT_ID,
+        CmisInput.FILTER
 
 }, type = "c-cmis-function")
 
 public class CmisFunction implements OutboundConnectorFunction, CherryConnector {
-    private final Logger logger = LoggerFactory.getLogger(CmisFunction.class.getName());
-
     public static final List<Class<?>> allFunctions = Arrays.asList(CreateFolderFunction.class,
-            DeleteDocumentWorker.class,
-            DeleteFolderWorker.class,
+            DeleteDocumentFunction.class,
+            DeleteFolderFunction.class,
             DownloadDocumentFunction.class,
             ListCmisObjectFunction.class,
-            UploadDocumentFunction.class);
-    public static final String WORKER_LOGO = "data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg   xmlns:dc='http://purl.org/dc/elements/1.1/'   xmlns:cc='http://creativecommons.org/ns%23'   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23'   xmlns:svg='http://www.w3.org/2000/svg'   xmlns='http://www.w3.org/2000/svg'   class='svg-icon'   style='overflow:hidden;fill:currentColor'   viewBox='0 0 18 18'   version='1.1'   id='svg1440'   width='18'   height='18'%3E  %3Cmetadata     id='metadata1446'%3E    %3Crdf:RDF%3E      %3Ccc:Work         rdf:about=''%3E        %3Cdc:format%3Eimage/svg+xml%3C/dc:format%3E        %3Cdc:type           rdf:resource='http://purl.org/dc/dcmitype/StillImage' /%3E        %3Cdc:title%3E%3C/dc:title%3E      %3C/cc:Work%3E    %3C/rdf:RDF%3E  %3C/metadata%3E  %3Cdefs     id='defs1444' /%3E  %3Cpath     d='M 11.787502,0.03077077 H 1.7442498 V 18.007694 H 16.390656 V 4.6295182 Z m 0.418471,1.60120033 2.581953,2.5794794 H 12.205973 Z M 15.553727,17.171558 H 2.5811916 V 0.86690724 H 11.369031 V 5.0475871 h 4.184696 z'     id='path1438'     style='stroke-width:0.0209134' /%3E  %3Cg     id='g2028'     transform='matrix(0.80344934,0,0,0.80344934,1.6904499,2.548462)'%3E    %3Cpath       d='m 16.7328,13.29858 c -0.1476,1.8864 -1.6524,2.7918 -1.9584,2.9574 -1.629,0.8892 -4.3704,0.5796 -5.6952001,-1.2852 -0.7308,-1.026 -1.098,-2.6586 -0.387,-3.789 l 0.009,-0.018 c 0.2556,-0.4158 0.8478,-1.1178 1.9404001,-1.1412 h 0.0396 c 0.3906,0 0.8406,0.1188 1.2384,0.2232 0.279,0.0738 0.5202,0.1368 0.7002,0.1494 0.1134,0.0072 0.2754,-0.0216 0.4806,-0.0576 0.6138,-0.108 1.638,-0.288 2.5344,0.3456 1.2204,0.865801 1.1052,2.5452 1.098,2.6154 z'       id='path2'       style='fill:%23aa0000;fill-opacity:1' /%3E    %3Cpath       d='m 9.2718,10.287181 c -0.351,0.2484 -0.5832,0.5562 -0.7236,0.783 l -0.009,0.0144 c -0.3636001,0.5796 -0.4644,1.2528 -0.3960001,1.9116 -0.0072,0.0036 -0.0144,0.0072 -0.0198,0.0126 -1.3338001,1.089 -2.8404,0.8082 -3.4254003,0.6372 l -0.0342,-0.009 c -1.8630002,-0.4644 -3.70259996,-2.4768 -3.3642,-4.6206 0.1872,-1.1808001 1.08,-2.538 2.4264,-2.8476 0.2322,-0.054 1.4454,-0.279 2.421,0.5382 0.2988,0.252 0.5202,0.6192001 0.7146,0.9432 0.1386,0.234 0.2592,0.4338 0.3906001,0.5652 0.0846,0.0846 0.2322,0.1674 0.4194,0.2736 0.549,0.3078001 1.3770001,0.7740001 1.5930002,1.7784 0.0018,0.0072 0.0036,0.0144 0.0072,0.0198 z'       id='path4'       style='fill:%23aa0000;fill-opacity:1' /%3E    %3Cpath       d='m 12.9294,10.18638 c -0.1062,0.018 -0.1998,0.0306 -0.2664,0.0306 -0.0108,0 -0.0216,-0.0018 -0.0306,-0.0018 -0.0504,-0.0036 -0.1098,-0.0108 -0.1728,-0.0234 0.5526,-1.4112 0.7812,-3.6684 -1.1394,-6.5268 -0.0036,-0.0072 -0.009,-0.0126 -0.0162,-0.018 0.1116,-0.4428 0.1494,-0.7524 0.1584,-0.828 0.0054,-0.0504 -0.0306,-0.0936 -0.0792,-0.099 -0.0504,-0.0072 -0.0936,0.0306 -0.099,0.0792 -0.0216,0.1926 -0.2376,1.9296001 -1.4490001,3.4722004 -0.7578001,0.9648001 -1.9512001,1.6830001 -2.3634002,1.8882 -0.0378,-0.0252 -0.0702,-0.0504 -0.0918,-0.072 -0.0594,-0.0594 -0.117,-0.1368 -0.1764,-0.2286 0.0342,-0.018 0.0702,-0.0378 0.108,-0.0576 0.4302,-0.2304 1.1502,-0.6138001 2.0286002,-1.5336001 1.0386001,-1.0872 1.2366001,-2.7522001 0.9450001,-3.2058 -0.1404,-0.2196 -0.3654001,-0.2412 -0.5454001,-0.2574 -0.2358,-0.0198 -0.378,-0.0342 -0.4032,-0.3546 -0.0234,-0.279 0.108,-0.5256 0.369,-0.6912 0.3510001,-0.225 0.9792001,-0.297 1.5876001,0.0486 0.3798,0.2142 0.3762,0.5796 0.3744,0.9324 -0.0018,0.2358 -0.0036,0.459 0.1134,0.6192 l 0.0504,0.0684 c 0.288,0.3906001 0.9612,1.3014001 1.3644,2.8908 C 13.626,8.01918 13.2192,9.56898 12.9294,10.18638 Z'       id='path6'       style='fill:%23502d16;fill-opacity:1' /%3E    %3Cpath       d='m 7.6338,2.8045802 c -0.0144,0.0072 -0.0288,0.0108 -0.0432,0.0108 -0.0324,0 -0.063,-0.018 -0.0792,-0.0468 -0.0018,-0.0018 -0.1278,-0.2268 -0.3546,-0.4338 -0.0378,-0.0324 -0.0396,-0.09 -0.0072,-0.126 0.0342,-0.0378 0.09,-0.0396 0.1278,-0.0072 0.2502,0.2268 0.3852,0.4698 0.3906,0.4806 0.025201,0.0432 0.009,0.0972 -0.0342,0.1224 z'       id='path8' /%3E    %3Cpath       d='m 7.8156,4.51998 c -0.1872,0.2214 -0.2844,0.261 -0.432,0.3204 l -0.0468,0.0198 c -0.0108,0.0054 -0.0234,0.0072 -0.0342,0.0072 -0.036,0 -0.0684,-0.0216 -0.0828,-0.0558 -0.0198,-0.045 0.0018,-0.099 0.0486,-0.117 l 0.0468,-0.0198 c 0.135,-0.0558 0.2034,-0.0846 0.3636,-0.27 0.0324,-0.0396 0.09,-0.0432 0.1278,-0.0108 0.0378,0.0324 0.0414,0.0882 0.009,0.126 z'       id='path10' /%3E    %3Cpath       d='m 10.134,3.1591802 c -0.0468,-0.0738 -0.108,-0.1134 -0.1764,-0.135 -0.2394,0.3222 -1.0818001,0.81 -1.9278,0.81 -0.225,0 -0.4518,-0.0342 -0.666,-0.1152 -0.576,-0.2196 -0.9702,-0.5256 -1.3518001,-0.8208 -0.3024,-0.2358 -0.5886,-0.4572 -0.9378,-0.6084001 -0.0468,-0.0216 -0.0666,-0.0738 -0.0468,-0.1188 0.0198,-0.0468 0.072,-0.0666 0.1188,-0.0468 0.369,0.162 0.6642,0.3888001 0.9756,0.6318 0.3708,0.2880001 0.756,0.5850001 1.3050001,0.7938 0.5598,0.2124 1.1880001,0.0738 1.6650001,-0.1404 -0.2052,-0.6336 -1.5318002,-2.56139997 -3.7188,-2.0700002 -0.3384,0.0756 -0.6336,0.1458 -0.8928,0.207 -1.098,0.2574 -1.5678,0.3672001 -2.0556002,0.2376 0.045,0.2268001 0.1638,0.4194 0.3528,0.5742001 0.378,0.3042 0.927,0.3798 1.1880001,0.3834 C 3.8322,2.59038 3.69,2.49318 3.5154,2.43198 3.4686,2.41578 3.4434,2.36538 3.4596,2.31858 c 0.0162,-0.0486 0.0684,-0.072 0.1152,-0.0558 0.567,0.1998 0.828,0.7074 1.2492001,1.7424002 0.441,1.0836 1.9836001,2.0934 3.2346,1.7190001 1.2744,-0.3816 1.2528001,-1.7244 1.251,-1.7388 0,-0.036 0.0216,-0.0702 0.054,-0.0846 0.0846,-0.0378 0.5184,-0.2358 0.8243999,-0.5238 0.0054,-0.0054 0.0108,-0.009 0.0162,-0.009 v -0.0018 C 10.1898,3.27798 10.1646,3.20778 10.134,3.1591802 M 7.1496005,2.20878 c 0.0342,-0.0378 0.09,-0.0396 0.1278,-0.0072 0.2502,0.2268 0.3852,0.4698 0.3906,0.4806 0.0252,0.0432 0.009,0.0972 -0.0342,0.1224 -0.0144,0.0072 -0.0288,0.0108 -0.0432,0.0108 -0.0324,0 -0.063,-0.018 -0.0792,-0.0468 -0.0018,-0.0018 -0.1278,-0.2268 -0.3546,-0.4338 -0.037801,-0.0324 -0.0396,-0.09 -0.0072,-0.126 m -1.5156002,1.2258 c -0.0036,0 -0.0558,0.009 -0.1584,0.009 -0.081,0 -0.1908,-0.0054 -0.3312,-0.0234 -0.0504,-0.0054 -0.0846,-0.0504 -0.0774,-0.1008 0.0054,-0.0486 0.0504,-0.0828 0.1008,-0.0774 0.2916,0.0378 0.4338,0.0162 0.4356,0.0162 0.0486,-0.009 0.0954,0.0234 0.1026,0.0738 0.009,0.0486 -0.0234,0.0936 -0.072,0.1026 M 7.8156,4.51998 c -0.1872,0.2214 -0.2844,0.261 -0.432,0.3204 l -0.0468,0.0198 c -0.0108,0.0054 -0.0234,0.0072 -0.0342,0.0072 -0.036,0 -0.0684,-0.0216 -0.0828,-0.0558 -0.0198,-0.045 0.0018,-0.099 0.0486,-0.117 l 0.0468,-0.0198 c 0.135,-0.0558 0.2034,-0.0846 0.3636,-0.27 0.0324,-0.0396 0.09,-0.0432 0.1278,-0.0108 0.0378,0.0324 0.0414,0.0882 0.009,0.126 z'       id='path12'       style='fill:%23008000;fill-opacity:1' /%3E    %3Cpath       d='m 5.7060003,3.33198 c 0.009,0.0486 -0.0234,0.0936 -0.072,0.1026 -0.0036,0 -0.0558,0.009 -0.1584,0.009 -0.081,0 -0.1908,-0.0054 -0.3312,-0.0234 -0.0504,-0.0054 -0.0846,-0.0504 -0.0774,-0.1008 0.0054,-0.0486 0.0504,-0.0828 0.1008,-0.0774 0.2916,0.0378 0.4338,0.0162 0.4356,0.0162 0.0486,-0.009 0.0954,0.0234 0.1026,0.0738 z'       id='path14' /%3E  %3C/g%3E%3C/svg%3E";
-
+            UploadDocumentFunction.class,
+            CheckConnectionFunction.class);
+    public static final String WORKER_LOGO =
+            "data:image/png;base64,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";
+    private final Logger logger = LoggerFactory.getLogger(CmisFunction.class.getName());
 
     @Override
     public CmisOutput execute(OutboundConnectorContext outboundConnectorContext) throws Exception {
         CmisInput cmisInput = outboundConnectorContext.bindVariables(CmisInput.class);
-        // search the sub-function referenced
+        // search the function referenced
         String function = cmisInput.getCmisFunction();
         long beginTime = System.currentTimeMillis();
         logger.info("CmisFunction receive function [{}]", function);
+
 
         CmisConnection cmisConnection = null;
         try {
             CmisParameters cmisParameters = CmisParameters.getCodingConnection(cmisInput.getCmisConnection());
             cmisConnection = CmisFactoryConnection.getInstance().getCmisConnection(cmisParameters);
         } catch (Exception e) {
-            throw new ConnectorException(CmisError.BPMNERROR_NO_CONNECTION_TO_CMIS, "No connection with [" + cmisInput.getCmisConnection());
+            throw new ConnectorException(CmisError.NO_CONNECTION_TO_CMIS, "No connection with [" + cmisInput.getCmisConnection());
         }
 
 
         for (CmisSubFunction inputSubFunction : getListSubFunctions()) {
             if (inputSubFunction.getSubFunctionType().equals(function)) {
                 CmisOutput cmisOutput = inputSubFunction.executeSubFunction(cmisConnection, cmisInput, outboundConnectorContext);
-                logger.info("PDFFunction End function [{}] in {} ms", function, System.currentTimeMillis() - beginTime);
+                logger.info("CMISFunction End function [{}] in {} ms", function, System.currentTimeMillis() - beginTime);
                 return cmisOutput;
             }
         }
-        throw new ConnectorException(CmisError.BPMNERROR_UNKNOWN_FUNCTION, "Unknown function " + function + "]");
+        throw new ConnectorException(CmisError.UNKNOWN_FUNCTION, "Unknown function " + function + "]");
 
     }
 
@@ -114,8 +120,8 @@ public class CmisFunction implements OutboundConnectorFunction, CherryConnector 
     @Override
     public Map<String, String> getListBpmnErrors() {
         Map<String, String> allErrors = new HashMap<>();
-        allErrors.put(CmisError.BPMNERROR_UNKNOWN_FUNCTION, CmisError.BPMNERROR_UNKNOWN_FUNCTION_EXPL);
-        allErrors.put(CmisError.BPMNERROR_NO_CONNECTION_TO_CMIS, CmisError.BPMNERROR_NO_CONNECTION_TO_CMIS_EXPL);
+        allErrors.put(CmisError.UNKNOWN_FUNCTION, CmisError.UNKNOWN_FUNCTION_EXPLANATION);
+        allErrors.put(CmisError.NO_CONNECTION_TO_CMIS, CmisError.NO_CONNECTION_TO_CMIS_EXPLANATION);
 
         for (CmisSubFunction subFunction : getListSubFunctions()) {
             allErrors.putAll(subFunction.getBpmnErrors());
@@ -144,9 +150,9 @@ public class CmisFunction implements OutboundConnectorFunction, CherryConnector 
     }
 
     /**
-     * Return the list of sub-function detected
+     * Return the list of function detected
      *
-     * @return list of sub functions availables
+     * @return list of sub functions available
      */
     public List<CmisSubFunction> getListSubFunctions() {
         List<CmisSubFunction> listSubFunction = new ArrayList<>();
@@ -163,4 +169,5 @@ public class CmisFunction implements OutboundConnectorFunction, CherryConnector 
         }
         return listSubFunction;
     }
+
 }

@@ -15,11 +15,11 @@
 
 
         <!-- connector SDK version -->
-        <version.connectors>8.7.3</version.connectors>
+        <version.connector>8.7.8</version.connector>
         <version.chemistry>1.1.0</version.chemistry>
 
         <version.opensagres>2.0.4</version.opensagres>
-        <version.filestorage>2.0.0</version.filestorage>
+        <version.filestorage>2.2.0</version.filestorage>
 
         <!-- external libraries -->
         <version.assertj>3.27.3</version.assertj>
@@ -42,10 +42,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.camunda.connector</groupId>
             <artifactId>connector-core</artifactId>
-            <version>${version.connectors}</version>
+            <version>${version.connector}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -65,14 +66,14 @@
         <dependency>
             <groupId>io.camunda.connector</groupId>
             <artifactId>element-template-generator-core</artifactId>
-            <version>${version.connectors}</version>
+            <version>${version.connector}</version>
         </dependency>
 
         <!-- test dependencies -->
         <dependency>
             <groupId>io.camunda.connector</groupId>
             <artifactId>connector-test</artifactId>
-            <version>${version.connectors}</version>
+            <version>${version.connector}</version>
             <scope>test</scope>
         </dependency>
 
@@ -95,10 +96,17 @@
         <dependency>
             <groupId>io.camunda.connector</groupId>
             <artifactId>spring-boot-starter-camunda-connectors</artifactId>
-            <version>${version.connectors}</version>
+            <version>${version.connector}</version>
             <scope>test</scope>
         </dependency>
 
+        <!-- to generate the element-template -->
+        <dependency>
+            <groupId>io.camunda.community</groupId>
+            <artifactId>zeebe-cherry-runtime</artifactId>
+            <version>3.4.0</version>
+            <scope>test</scope>
+        </dependency>
 
 
 

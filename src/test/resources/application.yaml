@@ -11,16 +11,21 @@
 # local connection
 camunda:
   client:
-    mode: selfmanaged
+    mode: self-managed
+
     zeebe:
       enabled: true
+      preferRestOverGrpc: true
+
       audience: zeebe-api
       gatewayUrl: http://localhost:26500
       restAddress: http://localhost:8088
-      preferRestOverGrpc: false
-      executionThreads: 1
+      request-timeout: PT25S
+
+      executionThreads: 32
       defaults:
-        maxJobsActive: 1
+        maxJobsActive: 32
+
     operate:
       enabled: false
     tasklist:

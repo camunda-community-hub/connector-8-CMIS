@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1o0l3xz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1o0l3xz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.39.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
   <bpmn:collaboration id="Collaboration_1gdovn7">
     <bpmn:participant id="Participant_1ofzr54" processRef="CmisScenario" />
+    <bpmn:participant id="Participant_18wgsd1" name="Web" />
+    <bpmn:participant id="Participant_1a2gw46" name="CMIS" />
+    <bpmn:participant id="Participant_0pb1b74" name="Temporary folder" />
+    <bpmn:messageFlow id="Flow_1ehj5z1" sourceRef="Participant_18wgsd1" targetRef="Activity_upload_document_v1" />
+    <bpmn:messageFlow id="Flow_068m8ii" sourceRef="Participant_18wgsd1" targetRef="Activity_upload_document_v2" />
+    <bpmn:messageFlow id="Flow_1ojsr1n" sourceRef="Activity_upload_document_v1" targetRef="Participant_1a2gw46" />
+    <bpmn:messageFlow id="Flow_1cv4qqu" sourceRef="Activity_upload_document_v2" targetRef="Participant_1a2gw46" />
+    <bpmn:messageFlow id="Flow_1gnw0dn" sourceRef="Participant_1a2gw46" targetRef="Activity_ListObjects" />
+    <bpmn:messageFlow id="Flow_1l1kuwk" sourceRef="Participant_1a2gw46" targetRef="Activity_Download_Document" />
+    <bpmn:messageFlow id="Flow_17ritfm" sourceRef="Activity_Download_Document" targetRef="Participant_0pb1b74" />
+    <bpmn:messageFlow id="Flow_1fdhxhl" sourceRef="Activity_DeleteDocument" targetRef="Participant_1a2gw46" />
+    <bpmn:messageFlow id="Flow_0s2s2hr" sourceRef="Activity_create_test_california" targetRef="Participant_1a2gw46" />
+    <bpmn:messageFlow id="Flow_00kie6t" sourceRef="Activity_create_test_ohio" targetRef="Participant_1a2gw46" />
+    <bpmn:messageFlow id="Flow_1e9oas9" sourceRef="Activity_Delete_test_ohio" targetRef="Participant_1a2gw46" />
+    <bpmn:messageFlow id="Flow_0t57y4j" sourceRef="Activity_Delete_Test_california" targetRef="Participant_1a2gw46" />
   </bpmn:collaboration>
   <bpmn:process id="CmisScenario" name="CmisScenario" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0o0u39x">
-      <bpmn:lane id="Lane_0zfnuev" name="List">
-        <bpmn:flowNodeRef>Activity_ListObjects</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0ro7tvk</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EventSubProcess</bpmn:flowNodeRef>
-      </bpmn:lane>
-      <bpmn:lane id="Lane_0364jgd" name="Document">
-        <bpmn:flowNodeRef>Event_0l7yrb4</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_PurgeDocument</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_DeleteDocument</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_upload_document_v1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_Download_Document</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_upload_document_v2</bpmn:flowNodeRef>
-      </bpmn:lane>
       <bpmn:lane id="Lane_16buafi" name="Folder">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_create_test_california</bpmn:flowNodeRef>
@@ -27,62 +29,65 @@
         <bpmn:flowNodeRef>Activity_Delete_Test_california</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1m1jeje</bpmn:flowNodeRef>
       </bpmn:lane>
+      <bpmn:lane id="Lane_0364jgd" name="Document">
+        <bpmn:flowNodeRef>Event_0l7yrb4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_PurgeDocument</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_DeleteDocument</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_upload_document_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_Download_Document</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_upload_document_v2</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0zfnuev" name="List">
+        <bpmn:flowNodeRef>Activity_ListObjects</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EventSubProcess</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0ro7tvk</bpmn:flowNodeRef>
+      </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_1mevemb</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Activity_create_test_california" name="Create /test/california">
+    <bpmn:serviceTask id="Activity_create_test_california" name="Create /test/california" zeebe:modelerTemplate="io.camunda.connector.cmis.CmisFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-cmis-function" />
-        <zeebe:ioMapping>
-          <zeebe:input source="=&#34;/&#34;" target="folderPath" />
-          <zeebe:input source="true" target="folderCmisType_optional" />
-          <zeebe:input source="=&#34;cmis:folder&#34;" target="cmisType" />
-          <zeebe:input source="true" target="recursiveName" />
-          <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
-          <zeebe:input source="false" target="folder_id_optional" />
-          <zeebe:input source="=&#34;/test/california&#34;" target="folderName" />
-          <zeebe:input source="=&#34;create-folder&#34;" target="cmisFunction" />
-        </zeebe:ioMapping>
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
+        <zeebe:ioMapping>
+          <zeebe:input source="create-folder" target="cmisFunction" />
+          <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
+          <zeebe:input source="=&#34;/&#34;" target="folderPath" />
+          <zeebe:input source="false" target="cmisType_optional" />
+          <zeebe:input source="true" target="recursiveName" />
+          <zeebe:input source="=&#34;/test/california&#34;" target="folderName" />
+          <zeebe:output source="= result.folderId" target="folderCaliforniaId" />
+          <zeebe:output source="= result.listFoldersCreated" target="listFoldersCalifornia" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1mevemb</bpmn:incoming>
       <bpmn:outgoing>Flow_18fjwbd</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_create_test_ohio" name="Create /test/ohio">
+    <bpmn:serviceTask id="Activity_create_test_ohio" name="Create /test/ohio" zeebe:modelerTemplate="io.camunda.connector.cmis.CmisFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-cmis-function" />
         <zeebe:ioMapping>
-          <zeebe:input source="false" target="folderCmisType_optional" />
+          <zeebe:input source="create-folder" target="cmisFunction" />
           <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
           <zeebe:input source="/test" target="folderPath" />
+          <zeebe:input source="false" target="cmisType_optional" />
           <zeebe:input source="false" target="recursiveName" />
-          <zeebe:input source="false" target="folder_id_optional" />
           <zeebe:input source="ohio" target="folderName" />
-          <zeebe:input source="=&#34;create-folder&#34;" target="cmisFunction" />
-          <zeebe:input source="=&#34;cmis:folder&#34;" target="cmisType" />
+          <zeebe:output source="= result.folderId" target="folderIdOhio" />
+          <zeebe:output source="= result.listFoldersCreated" target="listFoldersOhio" />
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_18fjwbd</bpmn:incoming>
       <bpmn:outgoing>Flow_1kzm8t0</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1mevemb" sourceRef="StartEvent_1" targetRef="Activity_create_test_california" />
-    <bpmn:sequenceFlow id="Flow_0za3okq" sourceRef="Activity_Delete_Test_california" targetRef="Activity_Review" />
-    <bpmn:sequenceFlow id="Flow_0odm517" sourceRef="Activity_Review" targetRef="Activity_PurgeDocument" />
-    <bpmn:sequenceFlow id="Flow_06j7cqk" sourceRef="Activity_PurgeDocument" targetRef="Event_0l7yrb4" />
-    <bpmn:sequenceFlow id="Flow_0buxfk3" sourceRef="Event_1m1jeje" targetRef="Activity_PurgeDocument" />
-    <bpmn:sequenceFlow id="Flow_0durvcg" sourceRef="Activity_Download_Document" targetRef="Activity_DeleteDocument" />
-    <bpmn:sequenceFlow id="Flow_1ygaqdb" sourceRef="Activity_DeleteDocument" targetRef="Activity_Delete_test_ohio" />
-    <bpmn:sequenceFlow id="Flow_1nykj45" sourceRef="Activity_Delete_test_ohio" targetRef="Activity_Delete_Test_california" />
-    <bpmn:sequenceFlow id="Flow_079pyic" sourceRef="Activity_upload_document_v1" targetRef="Activity_upload_document_v2" />
-    <bpmn:sequenceFlow id="Flow_0dmij27" sourceRef="Activity_ListObjects" targetRef="Activity_Download_Document" />
-    <bpmn:sequenceFlow id="Flow_18fjwbd" sourceRef="Activity_create_test_california" targetRef="Activity_create_test_ohio" />
-    <bpmn:sequenceFlow id="Flow_1kzm8t0" sourceRef="Activity_create_test_ohio" targetRef="Activity_upload_document_v1" />
     <bpmn:userTask id="Activity_Review" name="review Creation">
       <bpmn:incoming>Flow_0za3okq</bpmn:incoming>
       <bpmn:outgoing>Flow_0odm517</bpmn:outgoing>
@@ -104,117 +109,118 @@
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_Delete_test_ohio" name="Delete folder /test/ohio">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="c-cmis-function" />
+        <zeebe:taskDefinition type="c-cmis-function" retries="" />
         <zeebe:ioMapping>
           <zeebe:input source="false" target="FolderId_optional" />
           <zeebe:input source="false" target="ErrorIfNotExist" />
           <zeebe:input source="false" target="ListObjectsDeleted_optional" />
           <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
           <zeebe:input source="true" target="folderPath_optional" />
-          <zeebe:input source="/test/ohio" target="folderPath" />
+          <zeebe:input source="=&#34;/test/ohio&#34;" target="folderPath" />
           <zeebe:input source="=&#34;delete-folder&#34;" target="cmisFunction" />
+          <zeebe:input source="=&#34;absolutePathName&#34;" target="sourceObject" />
         </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+        </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ygaqdb</bpmn:incoming>
       <bpmn:outgoing>Flow_1nykj45</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Delete_Test_california" name="Delete folder /test/california">
+    <bpmn:serviceTask id="Activity_Delete_Test_california" name="Delete folder /test">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="c-cmis-function" />
+        <zeebe:taskDefinition type="c-cmis-function" retries="" />
         <zeebe:ioMapping>
           <zeebe:input source="false" target="ErrorIfNotExist" />
           <zeebe:input source="false" target="ListObjectsDeleted_optional" />
-          <zeebe:input source="{&#34;url&#34;:&#34;http://localhost:8099/lightweightcmis/browser&#34;,&#34;userName&#34;:&#34;cmisaccess&#34;,&#34;password&#34;:&#34;demo&#34;}" target="cmisConnection" />
+          <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}&#10;" target="cmisConnection" />
           <zeebe:input source="false" target="FolderId_optional" />
           <zeebe:input source="true" target="folderPath_optional" />
-          <zeebe:input source="/test/california" target="folderPath" />
+          <zeebe:input source="=&#34;/test&#34;" target="folderPath" />
           <zeebe:input source="=&#34;delete-folder&#34;" target="cmisFunction" />
+          <zeebe:input source="=&#34;absolutePath&#34;" target="sourceObject" />
         </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+        </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1nykj45</bpmn:incoming>
       <bpmn:outgoing>Flow_0za3okq</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_DeleteDocument" name="Delete document">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="c-cmis-function" />
+        <zeebe:taskDefinition type="c-cmis-function" retries="" />
         <zeebe:ioMapping>
           <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
           <zeebe:input source="=&#34;delete-document&#34;" target="cmisFunction" />
+          <zeebe:input source="=&#34;objectId&#34;" target="sourceObject" />
+          <zeebe:input source="=cmisCherrySourceDocumentV1" target="cmisObjectId" />
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
-          <zeebe:header key="errorExpression" value="bpmnError(error.code, error.message)" />
+          <zeebe:header key="resultVariable" value="result" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0durvcg</bpmn:incoming>
       <bpmn:outgoing>Flow_1ygaqdb</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_ListObjects" name="List Objets">
+    <bpmn:serviceTask id="Activity_ListObjects" name="List Objets" zeebe:modelerTemplate="io.camunda.connector.cmis.CmisFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-cmis-function" />
         <zeebe:taskHeaders>
-          <zeebe:header key="Result Variable" value="result" />
-          <zeebe:header key="errorExpression" value="bpmnError(error.code, error.message)" />
+          <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
+          <zeebe:input source="list-objects" target="cmisFunction" />
           <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
-          <zeebe:input source="true" target="listCmisObject_optional" />
-          <zeebe:input source="/test/ohio" target="cmisAbsolutePathName" />
           <zeebe:input source="folderContent" target="sourceObject" />
+          <zeebe:input source="/test/ohio" target="absoluteFolderName" />
           <zeebe:input source=".*" target="filter" />
-          <zeebe:input source="=&#34;list-objects&#34;" target="cmisFunction" />
           <zeebe:output source="= result.listCmisObject" target="listCmisObject" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ub1rhe</bpmn:incoming>
       <bpmn:outgoing>Flow_0dmij27</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:boundaryEvent id="Event_1m1jeje" name="5 Mn" attachedToRef="Activity_Review">
-      <bpmn:outgoing>Flow_0buxfk3</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_0rg3kqy">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_0ub1rhe" sourceRef="Activity_upload_document_v2" targetRef="Activity_ListObjects" />
-    <bpmn:serviceTask id="Activity_upload_document_v1" name="Upload document V1">
+    <bpmn:serviceTask id="Activity_upload_document_v1" name="Upload document V1" zeebe:modelerTemplate="io.camunda.connector.cmis.CmisFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-cmis-function" />
         <zeebe:ioMapping>
+          <zeebe:input source="upload-document" target="cmisFunction" />
           <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
+          <zeebe:input source="false" target="cmisType_optional" />
+          <zeebe:input source="={ &#34;storageDefinition&#34;: &#34;URL&#34;, &#34;content&#34;: &#34;https://raw.githubusercontent.com/camunda-community-hub/connector-8-CMIS/2-0-Move-to-connector-8.5/src/test/resources/files/largeDocument.pdf&#34;}" target="sourceFile" />
+          <zeebe:input source="=&#34;/test/ohio&#34;" target="uploadFolderName" />
           <zeebe:input source="true" target="documentName_optional" />
-          <zeebe:input source="true" target="documentId_optional" />
-          <zeebe:input source="Cherry Explanation" target="documentName" />
-          <zeebe:input source="=&#34;{ \&#34;storageDefinition\&#34;: \&#34;URL\&#34;, \&#34;content\&#34;: \&#34;https://raw.githubusercontent.com/camunda-community-hub/connector-8-CMIS/2-0-Move-to-connector-8.5/src/test/resources/files/largeDocument.pdf\&#34;}&#34;" target="sourceFile" />
-          <zeebe:input source="/test/ohio" target="cmisAbsoluteFolderPathName" />
-          <zeebe:input source="true" target="description_optional" />
-          <zeebe:input source="This is the first version to explain how the framework is running" target="description" />
-          <zeebe:input source="cmis:document" target="cmisType" />
+          <zeebe:input source="First Ohio description Explanation" target="documentName" />
+          <zeebe:input source="true" target="importPolicy_optional" />
           <zeebe:input source="NEW_DOCUMENT" target="importPolicy" />
-          <zeebe:input source="=&#34;upload-document&#34;" target="cmisFunction" />
           <zeebe:output source="= result.documentId" target="cmisCherrySourceDocumentV1" />
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
-          <zeebe:header key="errorExpression" value="bpmnError(error.code, error.message)" />
-          <zeebe:header key="Result Variable" value="result" />
+          <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1kzm8t0</bpmn:incoming>
       <bpmn:outgoing>Flow_079pyic</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Download_Document" name="Download Document">
+    <bpmn:serviceTask id="Activity_Download_Document" name="Download Document" zeebe:modelerTemplate="io.camunda.connector.cmis.CmisFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-cmis-function" />
         <zeebe:ioMapping>
+          <zeebe:input source="download-document" target="cmisFunction" />
           <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
-          <zeebe:input source="TEMPFOLDER" target="storageDefinition" />
           <zeebe:input source="objectId" target="sourceObject" />
-          <zeebe:input source="cmisCherrySourceDocumentV1" target="cmisObjectId" />
-          <zeebe:input source="true" target="documentFile_optional" />
-          <zeebe:input source="=&#34;download-document&#34;" target="cmisFunction" />
-          <zeebe:output source="= result.documentFile" target="cherryExplantionFromCmis" />
+          <zeebe:input source="=cmisCherrySourceDocumentV1" target="cmisObjectId" />
+          <zeebe:input source="=null" target="filter" />
+          <zeebe:input source="TEMPFOLDER" target="storageDefinition" />
+          <zeebe:input source="false" target="jsonStorageDefinition_optional" />
+          <zeebe:output source="= result.fileLoaded" target="dowload.document1" />
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
-          <zeebe:header key="errorExpression" value="bpmnError(error.code, error.message)" />
-          <zeebe:header key="Result Variable" value="result" />
+          <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0dmij27</bpmn:incoming>
@@ -245,6 +251,29 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_14x4h70" sourceRef="Event_105ru9d" targetRef="Event_017io6d" />
     </bpmn:subProcess>
+    <bpmn:serviceTask id="Activity_upload_document_v2" name="Upload Document V2" zeebe:modelerTemplate="io.camunda.connector.cmis.CmisFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-cmis-function" />
+        <zeebe:ioMapping>
+          <zeebe:input source="upload-document" target="cmisFunction" />
+          <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
+          <zeebe:input source="false" target="cmisType_optional" />
+          <zeebe:input source="{ &#34;storageDefinition&#34;: &#34;URL&#34;,    &#34;content&#34;: &#34;https://raw.githubusercontent.com/camunda-community-hub/connector-8-CMIS/2-0-Move-to-connector-8.5/src/test/resources/files/largeDocument.pdf&#34;}" target="sourceFile" />
+          <zeebe:input source="/test/ohio" target="uploadFolderName" />
+          <zeebe:input source="true" target="documentName_optional" />
+          <zeebe:input source="Cmis Explanation" target="documentName" />
+          <zeebe:input source="true" target="importPolicy_optional" />
+          <zeebe:input source="NEW_DOCUMENT" target="importPolicy" />
+          <zeebe:output source="= result.documentId" target="cmisCherrySourceDocumentV2" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_079pyic</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ub1rhe</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:subProcess id="Activity_0ro7tvk" triggeredByEvent="true">
       <bpmn:startEvent id="Event_1lfb4in" name="2 h">
         <bpmn:outgoing>Flow_1hi9b5y</bpmn:outgoing>
@@ -257,215 +286,274 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1hi9b5y" sourceRef="Event_1lfb4in" targetRef="Event_15sp3vq" />
     </bpmn:subProcess>
-    <bpmn:serviceTask id="Activity_upload_document_v2" name="Upload Document V2">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="c-cmis-function" />
-        <zeebe:ioMapping>
-          <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
-          <zeebe:input source="cherrySourceDocumentV2" target="sourceFile" />
-          <zeebe:input source="true" target="documentName_optional" />
-          <zeebe:input source="Cherry Explanation" target="documentName" />
-          <zeebe:input source="false" target="description_optional" />
-          <zeebe:input source="/test/ohio" target="cmisAbsoluteFolderPathName" />
-          <zeebe:input source="NEW_VERSION" target="importPolicy" />
-          <zeebe:input source="Change owner of the document" target="versionLabel" />
-          <zeebe:input source="true" target="documentId_optional" />
-          <zeebe:input source="cmis:document" target="cmisType" />
-          <zeebe:input source="=&#34;upload-document&#34;" target="cmisFunction" />
-          <zeebe:output source="= result.documentId" target="cmisCherrySourceDocumentV2" />
-        </zeebe:ioMapping>
-        <zeebe:taskHeaders>
-          <zeebe:header key="errorExpression" value="bpmnError(error.code, error.message)" />
-          <zeebe:header key="Result Variable" value="result" />
-        </zeebe:taskHeaders>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_079pyic</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ub1rhe</bpmn:outgoing>
-    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_1m1jeje" name="5 Mn" attachedToRef="Activity_Review">
+      <bpmn:outgoing>Flow_0buxfk3</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0rg3kqy">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1mevemb" sourceRef="StartEvent_1" targetRef="Activity_create_test_california" />
+    <bpmn:sequenceFlow id="Flow_18fjwbd" sourceRef="Activity_create_test_california" targetRef="Activity_create_test_ohio" />
+    <bpmn:sequenceFlow id="Flow_1kzm8t0" sourceRef="Activity_create_test_ohio" targetRef="Activity_upload_document_v1" />
+    <bpmn:sequenceFlow id="Flow_0za3okq" sourceRef="Activity_Delete_Test_california" targetRef="Activity_Review" />
+    <bpmn:sequenceFlow id="Flow_0odm517" sourceRef="Activity_Review" targetRef="Activity_PurgeDocument" />
+    <bpmn:sequenceFlow id="Flow_06j7cqk" sourceRef="Activity_PurgeDocument" targetRef="Event_0l7yrb4" />
+    <bpmn:sequenceFlow id="Flow_0buxfk3" sourceRef="Event_1m1jeje" targetRef="Activity_PurgeDocument" />
+    <bpmn:sequenceFlow id="Flow_1ygaqdb" sourceRef="Activity_DeleteDocument" targetRef="Activity_Delete_test_ohio" />
+    <bpmn:sequenceFlow id="Flow_1nykj45" sourceRef="Activity_Delete_test_ohio" targetRef="Activity_Delete_Test_california" />
+    <bpmn:sequenceFlow id="Flow_0durvcg" sourceRef="Activity_Download_Document" targetRef="Activity_DeleteDocument" />
+    <bpmn:sequenceFlow id="Flow_0ub1rhe" sourceRef="Activity_upload_document_v2" targetRef="Activity_ListObjects" />
+    <bpmn:sequenceFlow id="Flow_0dmij27" sourceRef="Activity_ListObjects" targetRef="Activity_Download_Document" />
+    <bpmn:sequenceFlow id="Flow_079pyic" sourceRef="Activity_upload_document_v1" targetRef="Activity_upload_document_v2" />
   </bpmn:process>
   <bpmn:error id="Error_1srsdh2" name="Invalid Parent" errorCode="INVALID_PARENT" />
   <bpmn:error id="Error_1xo585x" name="No Connection CMIS" errorCode="NO_CONNECTION_CMIS" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1gdovn7">
       <bpmndi:BPMNShape id="Participant_1ofzr54_di" bpmnElement="Participant_1ofzr54" isHorizontal="true">
-        <dc:Bounds x="159" y="86" width="2271" height="720" />
+        <dc:Bounds x="159" y="166" width="2271" height="720" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_16buafi_di" bpmnElement="Lane_16buafi" isHorizontal="true">
-        <dc:Bounds x="189" y="86" width="2241" height="167" />
+      <bpmndi:BPMNShape id="Lane_0zfnuev_di" bpmnElement="Lane_0zfnuev" isHorizontal="true">
+        <dc:Bounds x="189" y="500" width="2241" height="386" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0364jgd_di" bpmnElement="Lane_0364jgd" isHorizontal="true">
-        <dc:Bounds x="189" y="253" width="2241" height="167" />
+        <dc:Bounds x="189" y="333" width="2241" height="167" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_0zfnuev_di" bpmnElement="Lane_0zfnuev" isHorizontal="true">
-        <dc:Bounds x="189" y="420" width="2241" height="386" />
+      <bpmndi:BPMNShape id="Lane_16buafi_di" bpmnElement="Lane_16buafi" isHorizontal="true">
+        <dc:Bounds x="189" y="166" width="2241" height="167" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="209" y="185" width="36" height="36" />
+        <dc:Bounds x="209" y="265" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1gnaxte_di" bpmnElement="Activity_create_test_california">
-        <dc:Bounds x="300" y="163" width="100" height="80" />
+        <dc:Bounds x="300" y="243" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_09e5a9y_di" bpmnElement="Activity_create_test_ohio">
-        <dc:Bounds x="460" y="163" width="100" height="80" />
+        <dc:Bounds x="460" y="243" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_14paj7g_di" bpmnElement="Activity_Review">
-        <dc:Bounds x="2070" y="116" width="100" height="80" />
+        <dc:Bounds x="2070" y="196" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0l7yrb4_di" bpmnElement="Event_0l7yrb4">
-        <dc:Bounds x="2342" y="318" width="36" height="36" />
+        <dc:Bounds x="2342" y="398" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0bhdtxg_di" bpmnElement="Activity_PurgeDocument">
-        <dc:Bounds x="2220" y="296" width="100" height="80" />
+        <dc:Bounds x="2220" y="376" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0jbo8it_di" bpmnElement="Activity_Delete_test_ohio">
-        <dc:Bounds x="1750" y="116" width="100" height="80" />
+        <dc:Bounds x="1750" y="196" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1q1d5jz_di" bpmnElement="Activity_Delete_Test_california">
-        <dc:Bounds x="1890" y="116" width="100" height="80" />
+        <dc:Bounds x="1890" y="196" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0bzxvwq_di" bpmnElement="Activity_DeleteDocument">
-        <dc:Bounds x="1600" y="286" width="100" height="80" />
+        <dc:Bounds x="1600" y="366" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1odao17_di" bpmnElement="Activity_ListObjects">
-        <dc:Bounds x="1180" y="466" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0llctib_di" bpmnElement="Activity_upload_document_v2">
-        <dc:Bounds x="1030" y="286" width="100" height="80" />
+        <dc:Bounds x="1180" y="546" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1an6j1l_di" bpmnElement="Activity_upload_document_v1">
-        <dc:Bounds x="900" y="286" width="100" height="80" />
+        <dc:Bounds x="900" y="366" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1r31qcc_di" bpmnElement="Activity_Download_Document">
-        <dc:Bounds x="1310" y="286" width="100" height="80" />
+        <dc:Bounds x="1310" y="366" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1y8vpq5_di" bpmnElement="EventSubProcess" isExpanded="true">
-        <dc:Bounds x="250" y="480" width="390" height="310" />
+        <dc:Bounds x="250" y="560" width="390" height="310" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0m6a3zx_di" bpmnElement="Event_044hfb5">
-        <dc:Bounds x="290" y="562" width="36" height="36" />
+        <dc:Bounds x="290" y="642" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="274" y="605" width="70" height="40" />
+          <dc:Bounds x="274" y="685" width="70" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p2jsgx_di" bpmnElement="Event_1p2jsgx">
-        <dc:Bounds x="542" y="562" width="36" height="36" />
+        <dc:Bounds x="542" y="642" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1uvwxmc_di" bpmnElement="Activity_ErrorInCmis">
-        <dc:Bounds x="380" y="540" width="100" height="80" />
+        <dc:Bounds x="380" y="620" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_017io6d_di" bpmnElement="Event_017io6d">
-        <dc:Bounds x="512" y="622" width="36" height="36" />
+        <dc:Bounds x="512" y="702" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fqrlep_di" bpmnElement="Event_105ru9d">
-        <dc:Bounds x="412" y="602" width="36" height="36" />
+        <dc:Bounds x="412" y="682" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="437" y="645" width="25" height="14" />
+          <dc:Bounds x="437" y="725" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0imssjx_di" bpmnElement="Flow_0imssjx">
-        <di:waypoint x="326" y="580" />
-        <di:waypoint x="380" y="580" />
+        <di:waypoint x="326" y="660" />
+        <di:waypoint x="380" y="660" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0elcqgx_di" bpmnElement="Flow_0elcqgx">
-        <di:waypoint x="480" y="580" />
-        <di:waypoint x="542" y="580" />
+        <di:waypoint x="480" y="660" />
+        <di:waypoint x="542" y="660" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14x4h70_di" bpmnElement="Flow_14x4h70">
-        <di:waypoint x="430" y="638" />
-        <di:waypoint x="430" y="658" />
-        <di:waypoint x="471" y="658" />
-        <di:waypoint x="471" y="640" />
-        <di:waypoint x="512" y="640" />
+        <di:waypoint x="430" y="718" />
+        <di:waypoint x="430" y="738" />
+        <di:waypoint x="471" y="738" />
+        <di:waypoint x="471" y="720" />
+        <di:waypoint x="512" y="720" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0llctib_di" bpmnElement="Activity_upload_document_v2">
+        <dc:Bounds x="1030" y="366" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1prifr7_di" bpmnElement="Activity_0ro7tvk" isExpanded="true">
-        <dc:Bounds x="1590" y="460" width="350" height="200" />
+        <dc:Bounds x="2050" y="540" width="350" height="200" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1axuf8i_di" bpmnElement="Event_1lfb4in">
-        <dc:Bounds x="1630" y="542" width="36" height="36" />
+        <dc:Bounds x="2090" y="622" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1640" y="585" width="16" height="14" />
+          <dc:Bounds x="2100" y="665" width="16" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15sp3vq_di" bpmnElement="Event_15sp3vq">
-        <dc:Bounds x="1712" y="542" width="36" height="36" />
+        <dc:Bounds x="2172" y="622" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1hi9b5y_di" bpmnElement="Flow_1hi9b5y">
-        <di:waypoint x="1666" y="560" />
-        <di:waypoint x="1712" y="560" />
+        <di:waypoint x="2126" y="640" />
+        <di:waypoint x="2172" y="640" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_17hckzy_di" bpmnElement="Event_1m1jeje">
-        <dc:Bounds x="2092" y="178" width="36" height="36" />
+        <dc:Bounds x="2092" y="258" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2127" y="221" width="25" height="14" />
+          <dc:Bounds x="2127" y="301" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1mevemb_di" bpmnElement="Flow_1mevemb">
-        <di:waypoint x="245" y="203" />
-        <di:waypoint x="300" y="203" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0za3okq_di" bpmnElement="Flow_0za3okq">
-        <di:waypoint x="1990" y="156" />
-        <di:waypoint x="2070" y="156" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0odm517_di" bpmnElement="Flow_0odm517">
-        <di:waypoint x="2170" y="156" />
-        <di:waypoint x="2195" y="156" />
-        <di:waypoint x="2195" y="336" />
-        <di:waypoint x="2220" y="336" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06j7cqk_di" bpmnElement="Flow_06j7cqk">
-        <di:waypoint x="2320" y="336" />
-        <di:waypoint x="2342" y="336" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0buxfk3_di" bpmnElement="Flow_0buxfk3">
-        <di:waypoint x="2110" y="214" />
-        <di:waypoint x="2110" y="336" />
-        <di:waypoint x="2220" y="336" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0durvcg_di" bpmnElement="Flow_0durvcg">
-        <di:waypoint x="1410" y="326" />
-        <di:waypoint x="1600" y="326" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ygaqdb_di" bpmnElement="Flow_1ygaqdb">
-        <di:waypoint x="1700" y="326" />
-        <di:waypoint x="1725" y="326" />
-        <di:waypoint x="1725" y="156" />
-        <di:waypoint x="1750" y="156" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1nykj45_di" bpmnElement="Flow_1nykj45">
-        <di:waypoint x="1850" y="156" />
-        <di:waypoint x="1890" y="156" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_079pyic_di" bpmnElement="Flow_079pyic">
-        <di:waypoint x="1000" y="326" />
-        <di:waypoint x="1030" y="326" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0dmij27_di" bpmnElement="Flow_0dmij27">
-        <di:waypoint x="1230" y="466" />
-        <di:waypoint x="1230" y="326" />
-        <di:waypoint x="1310" y="326" />
+        <di:waypoint x="245" y="283" />
+        <di:waypoint x="300" y="283" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18fjwbd_di" bpmnElement="Flow_18fjwbd">
-        <di:waypoint x="400" y="203" />
-        <di:waypoint x="460" y="203" />
+        <di:waypoint x="400" y="283" />
+        <di:waypoint x="460" y="283" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kzm8t0_di" bpmnElement="Flow_1kzm8t0">
-        <di:waypoint x="560" y="203" />
-        <di:waypoint x="730" y="203" />
-        <di:waypoint x="730" y="326" />
-        <di:waypoint x="900" y="326" />
+        <di:waypoint x="560" y="283" />
+        <di:waypoint x="730" y="283" />
+        <di:waypoint x="730" y="406" />
+        <di:waypoint x="900" y="406" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0za3okq_di" bpmnElement="Flow_0za3okq">
+        <di:waypoint x="1990" y="236" />
+        <di:waypoint x="2070" y="236" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0odm517_di" bpmnElement="Flow_0odm517">
+        <di:waypoint x="2170" y="236" />
+        <di:waypoint x="2195" y="236" />
+        <di:waypoint x="2195" y="416" />
+        <di:waypoint x="2220" y="416" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06j7cqk_di" bpmnElement="Flow_06j7cqk">
+        <di:waypoint x="2320" y="416" />
+        <di:waypoint x="2342" y="416" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0buxfk3_di" bpmnElement="Flow_0buxfk3">
+        <di:waypoint x="2110" y="294" />
+        <di:waypoint x="2110" y="416" />
+        <di:waypoint x="2220" y="416" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ygaqdb_di" bpmnElement="Flow_1ygaqdb">
+        <di:waypoint x="1700" y="406" />
+        <di:waypoint x="1725" y="406" />
+        <di:waypoint x="1725" y="236" />
+        <di:waypoint x="1750" y="236" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nykj45_di" bpmnElement="Flow_1nykj45">
+        <di:waypoint x="1850" y="236" />
+        <di:waypoint x="1890" y="236" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0durvcg_di" bpmnElement="Flow_0durvcg">
+        <di:waypoint x="1410" y="406" />
+        <di:waypoint x="1600" y="406" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ub1rhe_di" bpmnElement="Flow_0ub1rhe">
-        <di:waypoint x="1130" y="326" />
-        <di:waypoint x="1155" y="326" />
-        <di:waypoint x="1155" y="506" />
-        <di:waypoint x="1180" y="506" />
+        <di:waypoint x="1130" y="406" />
+        <di:waypoint x="1155" y="406" />
+        <di:waypoint x="1155" y="586" />
+        <di:waypoint x="1180" y="586" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dmij27_di" bpmnElement="Flow_0dmij27">
+        <di:waypoint x="1230" y="546" />
+        <di:waypoint x="1230" y="406" />
+        <di:waypoint x="1310" y="406" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_079pyic_di" bpmnElement="Flow_079pyic">
+        <di:waypoint x="1000" y="406" />
+        <di:waypoint x="1030" y="406" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_1r8ve3n_di" bpmnElement="Participant_18wgsd1" isHorizontal="true">
+        <dc:Bounds x="530" y="80" width="600" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1its6da_di" bpmnElement="Participant_1a2gw46" isHorizontal="true">
+        <dc:Bounds x="240" y="930" width="1840" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1uh6kjy_di" bpmnElement="Participant_0pb1b74" isHorizontal="true">
+        <dc:Bounds x="1170" y="80" width="600" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ehj5z1_di" bpmnElement="Flow_1ehj5z1">
+        <di:waypoint x="950" y="140" />
+        <di:waypoint x="950" y="366" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_068m8ii_di" bpmnElement="Flow_068m8ii">
+        <di:waypoint x="1100" y="140" />
+        <di:waypoint x="1100" y="366" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ojsr1n_di" bpmnElement="Flow_1ojsr1n">
+        <di:waypoint x="950" y="446" />
+        <di:waypoint x="950" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cv4qqu_di" bpmnElement="Flow_1cv4qqu">
+        <di:waypoint x="1080" y="446" />
+        <di:waypoint x="1080" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gnw0dn_di" bpmnElement="Flow_1gnw0dn">
+        <di:waypoint x="1230" y="930" />
+        <di:waypoint x="1230" y="626" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l1kuwk_di" bpmnElement="Flow_1l1kuwk">
+        <di:waypoint x="1360" y="930" />
+        <di:waypoint x="1360" y="446" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17ritfm_di" bpmnElement="Flow_17ritfm">
+        <di:waypoint x="1360" y="366" />
+        <di:waypoint x="1360" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fdhxhl_di" bpmnElement="Flow_1fdhxhl">
+        <di:waypoint x="1650" y="446" />
+        <di:waypoint x="1650" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s2s2hr_di" bpmnElement="Flow_0s2s2hr">
+        <di:waypoint x="350" y="323" />
+        <di:waypoint x="350" y="460" />
+        <di:waypoint x="670" y="460" />
+        <di:waypoint x="670" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00kie6t_di" bpmnElement="Flow_00kie6t">
+        <di:waypoint x="510" y="323" />
+        <di:waypoint x="510" y="410" />
+        <di:waypoint x="710" y="410" />
+        <di:waypoint x="710" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e9oas9_di" bpmnElement="Flow_1e9oas9">
+        <di:waypoint x="1800" y="276" />
+        <di:waypoint x="1800" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t57y4j_di" bpmnElement="Flow_0t57y4j">
+        <di:waypoint x="1940" y="276" />
+        <di:waypoint x="1940" y="930" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

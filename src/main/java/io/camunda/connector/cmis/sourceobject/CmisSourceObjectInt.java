@@ -6,23 +6,27 @@ package io.camunda.connector.cmis.sourceobject;
  */
 public interface CmisSourceObjectInt {
 
-  public final static String INPUT_SOURCE_OBJECT = "sourceObject";
-  public static final String INPUT_SOURCE_OBJECT_V_ID = "objectId";
-  public static final String INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME = "absolutePathName";
-  public static final String INPUT_SOURCE_OBJECT_V_FOLDERCONTENT = "folderContent";
+    String INPUT_SOURCE_OBJECT_OLD = "sourceObject";
+    String INPUT_SOURCE_OBJECT_V_ID_OLD = "objectId";
+    String INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME_OLD = "absolutePathName";
+    String INPUT_SOURCE_OBJECT_V_FOLDERCONTENT_OLD = "folderContent";
 
-  public static final String INPUT_CMIS_OBJECTID = "cmisObjectId";
+    String INPUT_SOURCE_OBJECT_V_ID_LABEL_OLD = "objectId";
+    String INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME_LABEL_OLD = "Absolute PathName";
+    String INPUT_SOURCE_OBJECT_V_FOLDERCONTENT_LABEL_OLD = "Folder Content";
 
-  public static final String INPUT_CMIS_ABSOLUTE_PATH_NAME = "cmisAbsolutePathName";
+    String INPUT_CMIS_OBJECTID_OLD = "cmisObjectId";
 
-  public static final String INPUT_FILTER = "filter";
+    String INPUT_CMIS_ABSOLUTE_PATH_NAME_OLD = "cmisAbsolutePathName";
 
-  String getSourceObject();
+    String INPUT_FILTER_OLD = "filter";
 
-  String getCmisObjectId();
+    String getSourceObject();
 
-  String getFilter();
+    String getCmisObjectId();
 
-  String getCmisAbsolutePathName();
+    String getFilter();
+
+    String getCmisAbsolutePathName();
 
 }

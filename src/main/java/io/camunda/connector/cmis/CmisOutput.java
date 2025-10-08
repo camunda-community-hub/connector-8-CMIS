@@ -1,5 +1,6 @@
 package io.camunda.connector.cmis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.camunda.connector.cherrytemplate.CherryOutput;
 import io.camunda.connector.cmis.toolbox.ParameterToolbox;
 
@@ -8,36 +9,36 @@ import java.util.List;
 import java.util.Map;
 
 public class CmisOutput implements CherryOutput {
-  public String getOutputFolderIdOutput;
+    public static final String FOLDER_ID = "folderId";
+    public static final String LIST_OBJECT_DELETED = "ListObjectsDeleted";
+    public static final String LIST_FOLDERS_CREATED = "listFoldersCreated";
+    public final static String LIST_CMIS_OBJECT = "listCmisObject";
+    public static final String DOCUMENTID = "documentId";
+    public static final String FILE_LOADED = "fileLoaded";
+    public static String DESCRIPTION_EXPLANATION = "`id`:CmisId, `name`: name of object, `description1 of the object, `isFolder` true if the object is a folder";
+    public String getOutputFolderIdOutput;
+    public String folderId;
+    public List<String> listObjectsDeleted;
+    public List<CmisOutput.CmisObjectDescription> listFoldersCreated;
+    public List<CmisObjectDescription> listCmisObject = new ArrayList<>();
+    public String documentId;
+    public Object fileLoaded;
 
-  public static final String OUTPUT_FOLDER_ID = "folderId";
-  public String folderId;
+    public String getDocumentId() {
+        return documentId;
+    }
 
-  public static final String OUTPUT_LIST_OBJECT_DELETED = "ListObjectsDeleted";
+    @JsonIgnore
+    @Override
+    public List<Map<String, Object>> getOutputParameters() {
+        return ParameterToolbox.getOutputParameters();
+    }
 
-  public List<String> listObjectsDeleted;
-  public final static String OUTPUT_LIST_OBJECT = "listCmisObject";
-  public List<CmisObjectDescription> listCmisObject = new ArrayList<>();
-
-  public static final String OUTPUT_CMIS_DOCUMENTID = "documentId";
-
-  public String documentId;
-
-  public String getdocumentId() {
-    return documentId;
-  }
-
-
-  public static class CmisObjectDescription {
-    public String id;
-    public String name;
-    public String description;
-    public boolean isFolder;
-  }
-
-              @Override
-  public List<Map<String, Object>> getOutputParameters() {
-    return ParameterToolbox.getOutputParameters();
-  }
+    public static class CmisObjectDescription {
+        public String id;
+        public String name;
+        public String description;
+        public boolean isFolder;
+    }
 
 }

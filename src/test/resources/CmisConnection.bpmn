@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_17foxw6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0">
+  <bpmn:process id="CmisCheckConnection" name="CmisCheckConnection" isExecutable="true">
+    <bpmn:serviceTask id="Activity_create_test_california" name="Check connection CMIS">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-cmis-function" />
+        <zeebe:ioMapping>
+          <zeebe:input source="={&#34;url&#34;:&#34;http://localhost:8099/cmis/browser&#34;,&#34;userName&#34;:&#34;test&#34;,&#34;password&#34;:&#34;test&#34;}" target="cmisConnection" />
+          <zeebe:input source="=&#34;check-connection&#34;" target="cmisFunction" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0pe82h9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ni2jsg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="Event_1g6pt37" name="1s">
+      <bpmn:outgoing>Flow_0pe82h9</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_13p52rs">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT1S</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1ni2jsg" sourceRef="Activity_create_test_california" targetRef="Event_0qk65ez" />
+    <bpmn:endEvent id="Event_0qk65ez">
+      <bpmn:incoming>Flow_1ni2jsg</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0pe82h9" sourceRef="Event_1g6pt37" targetRef="Activity_create_test_california" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CmisCheckConnection">
+      <bpmndi:BPMNShape id="Activity_1gnaxte_di" bpmnElement="Activity_create_test_california">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qk65ez_di" bpmnElement="Event_0qk65ez">
+        <dc:Bounds x="472" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0a0ol5i_di" bpmnElement="Event_1g6pt37">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="164" y="145" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ni2jsg_di" bpmnElement="Flow_1ni2jsg">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="472" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pe82h9_di" bpmnElement="Flow_0pe82h9">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

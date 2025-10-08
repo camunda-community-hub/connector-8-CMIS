@@ -1,13 +1,15 @@
 package io.camunda.connector.cmis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.cherrytemplate.CherryInput;
-import io.camunda.connector.cmis.toolbox.ParameterToolbox;
 import io.camunda.connector.cmis.toolbox.CmisError;
+import io.camunda.connector.cmis.toolbox.ParameterToolbox;
 import io.camunda.filestorage.FileVariable;
 import io.camunda.filestorage.storage.StorageDefinition;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -18,153 +20,209 @@ import java.util.Map;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CmisInput implements CherryInput {
-  /**
-   * Attention, each Input here must be added in the PdfFunction, list of InputVariables
-   */
-  public static final String INPUT_CMIS_FUNCTION = "cmisFunction";
-  private String cmisFunction;
+    public static final String GROUP_STORAGE_DEFINITION = "Storage definition";
+    /**
+     * Attention, each Input here must be added in the function, list of InputVariables
+     */
+    public static final String CMIS_FUNCTION = "cmisFunction";
+    public static final String CMIS_CONNECTION = "cmisConnection";
+    public static final String FOLDER_PATH = "folderPath";
+    public static final String FOLDER_NAME = "folderName";
+    public static final String RECURSIVE_NAME = "recursiveName";
+    public static final String JSON_STORAGE_DEFINITION = "jsonStorageDefinition";
+    public static final String STORAGE_DEFINITION = "storageDefinition";
+    public static final String STORAGE_DEFINITION_FOLDER_COMPLEMENT = "storageDefinitionComplement";
+    public static final String STORAGE_DEFINITION_CMIS_COMPLEMENT = "storageDefinitionCmis";
+    public static final String ERROR_IF_NOT_EXIST = "ErrorIfNotExist";
+    public static final String FOLDER_ID = "folderId";
+    /**
+     * Upload file
+     * The file maybe in a FileStorage, or a Camunda document
+     */
+    public static final String SOURCE_FILE = "sourceFile";
+    public static final String ABSOLUTE_FOLDER_NAME = "absoluteFolderName";
+    public static final String UPLOAD_FOLDER_NAME = "uploadFolderName";
+    public static final String DOCUMENT_NAME = "documentName";
+    public static final String CMIS_TYPE = "cmisType";
+    public static final String CMIS_TYPE_V_CMIS_DOCUMENT = "cmis:document";
+    public static final String CMIS_TYPE_V_CMIS_FOLDER = "cmis:folder";
+    public static final String IMPORT_POLICY = "importPolicy";
+    public static final String IMPORT_POLICY_V_NEW_DOCUMENT = "NEW_DOCUMENT";
+    public static final String IMPORT_POLICY_V_NEW_VERSION = "NEW_VERSION";
+    public static final String VERSION_LABEL = "versionLabel";
+    /**
+     * Download file
+     */
 
-  public static final String INPUT_CMIS_CONNECTION = "cmisConnection";
-  public Object cmisConnection;
+    public static final String SOURCE_OBJECT = "sourceObject";
+    public static final String SOURCE_OBJECT_V_ID = "objectId";
+    public static final String SOURCE_OBJECT_V_ABSOLUTEPATHNAME = "absolutePathName";
+    public static final String SOURCE_OBJECT_V_FOLDERCONTENT = "folderContent";
+    public static final String SOURCE_OBJECT_V_ID_LABEL = "objectId";
+    public static final String SOURCE_OBJECT_V_ABSOLUTEPATHNAME_LABEL = "Absolute PathName";
+    public static final String SOURCE_OBJECT_V_FOLDERCONTENT_LABEL = "Folder Content";
+    public static final String CMIS_OBJECT_ID = "cmisObjectId";
+    public static final String FILTER = "filter";
+    private final Logger logger = LoggerFactory.getLogger(CmisInput.class.getName());
+    public Object cmisConnection;
+    public String folderPath;
+    public String folderName;
+    public Boolean recursiveName;
+    public Object jsonStorageDefinition;
+    public String storageDefinition;
+    public String storageDefinitionComplement;
+    public String storageDefinitionCmis;
+    public Boolean errorIfNotExist;
+    public String folderId;
+    public Object sourceFile;
+    public String absoluteFolderName;
+    public String uploadFolderName;
+    public String documentName;
+    public String cmisType;
+    public String importPolicy;
+    public String versionLabel;
+    public String sourceObject;
+    public String filter;
 
-  public static final String INPUT_FOLDER_PATH = "folderPath";
-  public String folderPath;
+    //   public static final String ABSOLUTE_FOLDER_NAME = "absoluteFolderName";
+    String cmisObjectId;
+    private String cmisFunction;
 
-  public static final String FOLDER_NAME = "folderName";
-  public String folderName;
+    public String getSourceObject() {
+        return sourceObject;
+    }
 
+    public String getFilter() {
+        return filter;
+    }
 
-  public static final String RECURSIVE_NAME = "recursiveName";
-  public Boolean recursiveName;
+    public String getVersionLabel() {
+        return versionLabel;
+    }
 
+    public Object getSourceFile() {
+        return sourceFile;
+    }
 
+    public String getImportPolicy() {
+        return importPolicy;
+    }
 
-  public static final String OUTPUT_FILE_STORAGE = "outputFileStorage";
-  public String outputFileStorage;
+    public String getAbsoluteFolderName() {
+        return absoluteFolderName;
+    }
 
-  public static final String INPUT_ERROR_IF_NOT_EXIST = "ErrorIfNotExist";
-  public Boolean errorIfNotExist;
+    public String getDocumentName() {
+        return documentName;
+    }
 
-  public static final String INPUT_FOLDER_ID = "folderId";
-  public String folderId;
+    public String getCmisType(String defaultValue) {
+        return cmisType == null || cmisType.trim().isEmpty() ? defaultValue : cmisType;
+    }
 
+    public String getCmisFunction() {
+        return cmisFunction;
+    }
 
-  /**
-   * Upload file
-   */
-  public static final String INPUT_FILE_STORAGE = "inputFileStorage";
-  public Object inputFileStorage;
+    public Object getCmisConnection() {
+        return cmisConnection;
+    }
 
-  public static final String ABSOLUTE_FOLDER_NAME = "absoluteFolderName";
-  public String absoluteFolderName;
+    public String getFolderPath() {
+        return folderPath;
+    }
 
-  public static final String DOCUMENT_NAME = "documentName";
-  public String documentName;
+    public String getFolderName() {
+        return folderName;
+    }
 
-  public static final String CMIS_TYPE = "cmisType";
-  public static final String CMIS_TYPE_V_CMIS_DOCUMENT = "cmis:document";
-  public String cmisType;
+    public Boolean getRecursiveName() {
+        return recursiveName;
+    }
 
-  public static final String INPUT_IMPORT_POLICY = "importPolicy";
-  public static final String INPUT_IMPORT_POLICY_V_NEW_DOCUMENT = "NEW_DOCUMENT";
-  public static final String INPUT_IMPORT_POLICY_V_NEW_VERSION = "NEW_VERSION";
-  public String importPolicy;
+    public String getUploadFolderName() {
+        return uploadFolderName;
+    }
 
-  public static final String INPUT_VERSION_LABEL = "versionLabel";
-  public String versionLabel;
+    public String getFolderId() {
+        return folderId;
+    }
 
-  /**
-   * Download file
-   */
-
-  public static final String INPUT_SOURCE_OBJECT = "sourceObject";
-  public static final String INPUT_SOURCE_OBJECT_V_ID = "objectId";
-  public static final String INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME = "absolutePathName";
-  public static final String INPUT_SOURCE_OBJECT_V_FOLDERCONTENT = "folderContent";
-  public String sourceObject;
-
-
-  public static final String INPUT_CMIS_OBJECT_ID = "cmisObjectId";
-  String cmisObjectId;
-
-  //   public static final String ABSOLUTE_FOLDER_NAME = "absoluteFolderName";
-
-
-  public static final String INPUT_FILTER = "filter";
-  public String filter;
-
-  public String getSourceObject() {
-    return sourceObject;
-  }
-
-  public String getFilter() {
-    return filter;
-  }
-
-  public String getVersionLabel() {
-    return versionLabel;
-  }
-
-  public Object getInputFileStorage() {
-    return inputFileStorage;
-  }
-
-  public String getImportPolicy() {
-    return importPolicy;
-  }
-
-  public String getAbsoluteFolderName() {
-    return absoluteFolderName;
-  }
-
-  public String getDocumentName() {
-    return documentName;
-  }
-
-  public String getCmisType() {
-      return cmisType==null || cmisType.trim().isEmpty()? CMIS_TYPE_V_CMIS_DOCUMENT : cmisType;
-  }
-
-  public String getCmisFunction() {
-    return cmisFunction;
-  }
-
-  public Object getCmisConnection() {
-    return cmisConnection;
-  }
-
-  public String getFolderPath() {
-    return folderPath;
-  }
-
-  public String getFolderName() {
-    return folderName;
-  }
-
-  public Boolean getRecursiveName() {
-    return recursiveName;
-  }
+    public String getCmisObjectId() {
+        return cmisObjectId;
+    }
 
 
-  public String getFolderId() {
-    return folderId;
-  }
+    public Boolean getErrorIfNotExist() {
+        return errorIfNotExist;
+    }
 
-  public String getCmisObjectId() {
-    return cmisObjectId;
-  }
+    public Object getJsonStorageDefinition() {
+        return jsonStorageDefinition;
+    }
 
-  public String getOutputFileStorage() {
-    return outputFileStorage;
-  }
+    public String getStorageDefinition() {
+        return storageDefinition;
+    }
 
-  public Boolean getErrorIfNotExist() {
-    return errorIfNotExist;
-  }
+    public String getStorageDefinitionComplement() {
+        return storageDefinitionComplement;
+    }
 
-  @Override
-  public List<Map<String, Object>> getInputParameters() {
-    return ParameterToolbox.getInputParameters();
+    public String getStorageDefinitionCmis() {
+        return storageDefinitionCmis;
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Map<String, Object>> getInputParameters() {
+        return ParameterToolbox.getInputParameters();
+
+
+    }
+
+
+    public FileVariable initializeOutputFileVariable(String fileName) throws ConnectorException {
+        StorageDefinition storageOutputDefinition = getStorageDefinitionObject();
+
+        FileVariable fileVariable = new FileVariable();
+        fileVariable.setStorageDefinition(storageOutputDefinition);
+        fileVariable.setName(fileName);
+        return fileVariable;
+    }
+
+    /**
+     * Return a Storage definition
+     *
+     * @return the storage definition
+     * @throws ConnectorException if the connection
+     */
+    @JsonIgnore
+    public StorageDefinition getStorageDefinitionObject() throws ConnectorException {
+        try {
+
+            StorageDefinition storageDefinitionObj = null;
+            // Attention, it may be an empty string due to the modeler which not like null value
+            if (jsonStorageDefinition != null && ! jsonStorageDefinition.toString().trim().isEmpty() ) {
+                storageDefinitionObj = StorageDefinition.getFromObject(jsonStorageDefinition);
+                return storageDefinitionObj;
+            }
+
+            storageDefinitionObj = StorageDefinition.getFromStorageDefinition(getStorageDefinition());
+            storageDefinitionObj.complement = getStorageDefinitionComplement();
+            if (storageDefinitionObj.complement != null && storageDefinitionObj.complement.isEmpty())
+                storageDefinitionObj.complement = null;
+
+            storageDefinitionObj.complementInObject = getStorageDefinitionCmis();
+            return storageDefinitionObj;
+        } catch (Exception e) {
+            logger.error("Can't get the FileStorage - bad Gson value :" + getStorageDefinition());
+            throw new ConnectorException(CmisError.INCORRECT_STORAGEDEFINITION,
+                    "FileStorage information" + getStorageDefinition());
+        }
+    }
+
+}
 
     /*
     Arrays.asList(
@@ -223,27 +281,3 @@ public class CmisInput implements CherryInput {
         .setGroup(GROUP_SOURCE_OBJECT);
   }
   */
-  }
-
-  public FileVariable initializeOutputFileVariable(String fileName) throws ConnectorException {
-    StorageDefinition storageOutputDefinition;
-    try {
-      storageOutputDefinition = StorageDefinition.getFromString(outputFileStorage);
-    } catch (ConnectorException ce) {
-      throw ce;
-    } catch (Exception e) {
-      throw new ConnectorException(CmisError.BAD_STORAGE_DEFINITION, e.getMessage());
-    }
-
-
-    FileVariable fileVariable = new FileVariable();
-
-    fileVariable.setStorageDefinition(storageOutputDefinition);
-    fileVariable.setName(fileName);
-    fileVariable.setMimeType("text/csv");
-    return fileVariable;
-  }
-
-
-
-}
