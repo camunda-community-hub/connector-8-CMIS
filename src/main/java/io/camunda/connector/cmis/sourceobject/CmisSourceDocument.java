@@ -2,39 +2,37 @@ package io.camunda.connector.cmis.sourceobject;
 
 public class CmisSourceDocument implements CmisSourceObjectInt {
 
-  public static final String INPUT_CMIS_CONNECTION = "cmisConnection";
-  String sourceObject;
-  String cmisObjectId;
-  String cmisAbsolutePathName;
-  String filter;
+    public static final String INPUT_CMIS_CONNECTION = "cmisConnection";
+    public static final String INPUT_STORAGE_DEFINITION = "storageDefinition";
+    String sourceObject;
+    String cmisObjectId;
+    String cmisAbsolutePathName;
+    String filter;
+    String storageDefinition;
 
-  public static final String INPUT_STORAGE_DEFINITION = "storageDefinition";
+    String cmisConnection;
 
-  String storageDefinition;
+    public String getSourceObject() {
+        return sourceObject;
+    }
 
-  String cmisConnection;
+    public String getCmisObjectId() {
+        return cmisObjectId;
+    }
 
-  public String getSourceObject() {
-    return sourceObject;
-  }
+    public String getFilter() {
+        return filter;
+    }
 
-  public String getCmisObjectId() {
-    return cmisObjectId;
-  }
+    public String getCmisAbsolutePathName() {
+        return cmisAbsolutePathName;
+    }
 
-  public String getFilter() {
-    return filter;
-  }
+    public String getStorageDefinition() {
+        return storageDefinition;
+    }
 
-  public String getCmisAbsolutePathName() {
-    return cmisAbsolutePathName;
-  }
-
-  public String getStorageDefinition() {
-    return storageDefinition;
-  }
-
-  public String getCmisConnection() {
-    return cmisConnection;
-  }
+    public String getCmisConnection() {
+        return cmisConnection;
+    }
 }
