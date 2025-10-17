@@ -34,30 +34,30 @@ public class DeleteFolderFunction implements CmisSubFunction {
                                          CmisInput cmisInput,
                                          OutboundConnectorContext context) throws ConnectorException {
         CmisOutput cmisOutput = new CmisOutput();
-        String folderPath = cmisInput.getFolderPath();
-        String folderId = cmisInput.getFolderId();
-        if (folderId != null && folderPath != null) {
-            throw new ConnectorException(CmisError.ERROR_DOUBLE_FOLDER, "");
+        String folderPath = cmisInput.getFolderIdentificationPath();
+        String folderId = cmisInput.getFolderIdentificationId();
+        String folderIdentification = cmisInput.getFolderIdentification();
+        CmisObject cmisObject = null;
+        if ( CmisInput.FOLDER_IDENTIFICATION_V_PATH.equals(folderIdentification)){
+            if (folderPath != null)
+                cmisObject = cmisConnection.getObjectByPath(folderPath);
+        } else if ( CmisInput.FOLDER_IDENTIFICATION_V_ID.equals(folderIdentification)) {
+            if (folderId != null)
+                cmisObject = cmisConnection.getObjectById(folderId);
         }
 
         Boolean errorIfNotExist = cmisInput.getErrorIfNotExist();
 
-        CmisObject cmisObject = null;
-        if (folderPath != null)
-            cmisObject = cmisConnection.getObjectByPath(folderPath);
-        if (folderId != null)
-            cmisObject = cmisConnection.getObjectById(folderId);
         if (cmisObject == null) {
-            if (errorIfNotExist)
+            if (Boolean.TRUE.equals(errorIfNotExist))
                 throw new ConnectorException(CmisError.FOLDER_NOT_EXIST,
                         "Can't find FolderPath[" + folderPath + "] folderID[" + folderId + "]");
-            cmisOutput.listObjectsDeleted = Collections.emptyList();
+            cmisOutput.ListObjectsNotDeleted = Collections.emptyList();
             return cmisOutput;
         }
 
         if (cmisObject instanceof Folder cmisFolder) {
-            cmisOutput.listObjectsDeleted = cmisFolder.deleteTree(true, UnfileObject.DELETE, true);
-
+            cmisOutput.ListObjectsNotDeleted = cmisFolder.deleteTree(true, UnfileObject.DELETE, true);
         } else
             throw new ConnectorException(CmisError.NOT_A_FOLDER,
                     "Cmis Object is not a folder FolderPath[" + folderPath + "] folderID[" + folderId + "]");
@@ -73,10 +73,20 @@ public class DeleteFolderFunction implements CmisSubFunction {
                 new RunnerParameter(CmisInput.CMIS_CONNECTION, "CMIS Connection", String.class,
                         RunnerParameter.Level.REQUIRED, "Cmis Connection. JSON like {\"url\":\"http://localhost:8099/cmis/browser\",\"userName\":\"test\",\"password\":\"test\"}"),
 
-                RunnerParameter.getInstance(CmisInput.FOLDER_PATH, "Folder to delete", String.class,
-                        RunnerParameter.Level.OPTIONAL, "Folder path to delete. Contains '/' to select sub folder"), //
-                RunnerParameter.getInstance(CmisInput.FOLDER_ID, "Folder to delete", String.class,
-                        RunnerParameter.Level.OPTIONAL, "Folder Id to reference the folder to delete"), //
+                RunnerParameter.getInstance(CmisInput.FOLDER_IDENTIFICATION, "Identify the folder to delete", String.class,
+                        RunnerParameter.Level.REQUIRED, "Identify the cluster")
+                        .addChoice(CmisInput.FOLDER_IDENTIFICATION_V_PATH, "Folder Path")
+                        .addChoice(CmisInput.FOLDER_IDENTIFICATION_V_ID, "Folder Id")
+                ,
+
+                RunnerParameter.getInstance(CmisInput.FOLDER_IDENTIFICATION_PATH, "Folder Path to delete", String.class,
+                        RunnerParameter.Level.REQUIRED, "Folder path to delete. Contains '/' to select sub folder") //
+                        .addCondition(CmisInput.FOLDER_IDENTIFICATION, List.of(CmisInput.FOLDER_IDENTIFICATION_V_PATH) ),
+
+                RunnerParameter.getInstance(CmisInput.FOLDER_IDENTIFICATION_ID, "Folder ID to delete", String.class,
+                        RunnerParameter.Level.REQUIRED, "Folder Id to reference the folder to delete") //
+                .addCondition(CmisInput.FOLDER_IDENTIFICATION, List.of(CmisInput.FOLDER_IDENTIFICATION_V_ID) ),
+
                 RunnerParameter.getInstance(CmisInput.ERROR_IF_NOT_EXIST, "Error if not exist", Boolean.class,
                                 RunnerParameter.Level.OPTIONAL, "Throw a BPMN Error if the object does not exist") //
                         .setDefaultValue(Boolean.FALSE) //
@@ -86,9 +96,9 @@ public class DeleteFolderFunction implements CmisSubFunction {
     @Override
     public List<RunnerParameter> getOutputsParameter() {
         return List.of(
-                RunnerParameter.getInstance(CmisOutput.LIST_OBJECT_DELETED, "Folder ID created", String.class,
+                RunnerParameter.getInstance(CmisOutput.LIST_OBJECT_NOTDELETED, "Folders ID NOT deleted", List.class,
                         RunnerParameter.Level.REQUIRED,
-                        "Folder ID created. In case of a recursive creation, ID of " + "the last folder (deeper)"));
+                        "List of Folder ID Not deleted, which cannot be deleted by the CMIS engine."));
     }
 
     @Override

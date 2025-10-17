@@ -32,12 +32,14 @@ public class CmisSourceAccess {
             try {
                 return List.of(cmisConnection.getObjectById(cmisInput.getCmisObjectId()));
             } catch (Exception e) {
+                logger.error("cmisObjectId[{}] does not exist in the CMIS database", cmisInput.getCmisObjectId());
                 throw new ConnectorException(CmisError.DOCUMENT_NOT_EXIST, "Document [" + cmisInput.getCmisObjectId() + "] does not exist");
             }
         } else if (CmisInput.SOURCE_OBJECT_V_ABSOLUTEPATHNAME.equals(cmisInput.getSourceObject())) {
             try {
                 return List.of(cmisConnection.getObjectByPath(cmisInput.getAbsoluteFolderName()));
             } catch (Exception e) {
+                logger.error("absoluteFolderName[{}] does not exist in the CMIS database", cmisInput.getAbsoluteFolderName());
                 throw new ConnectorException(CmisError.FOLDER_NOT_EXIST, "Document [" + cmisInput.getAbsoluteFolderName() + "] does not exist");
             }
         } else if (CmisInput.SOURCE_OBJECT_V_FOLDERCONTENT.equals(cmisInput.getSourceObject())) {
@@ -45,12 +47,15 @@ public class CmisSourceAccess {
             try {
                 cmisObject = cmisConnection.getObjectByPath(cmisInput.getAbsoluteFolderName());
             } catch (Exception e) {
+                logger.error("absoluteFolderName[{}] does not exist in the CMIS database", cmisInput.getAbsoluteFolderName());
                 throw new ConnectorException(CmisError.FOLDER_NOT_EXIST, "Document [" + cmisInput.getAbsoluteFolderName() + "] does not exist");
             }
             // use the filter. If the object is a folder, get the contents
-            if (!(cmisObject instanceof Folder folder))
+            if (!(cmisObject instanceof Folder folder)) {
+                logger.error("absoluteFolderName[{}] is not a folder in the CMIS database", cmisInput.getAbsoluteFolderName());
                 throw new ConnectorException(CmisError.NOT_A_FOLDER, "Folder [" + cmisInput.getAbsoluteFolderName()
-                        + "] is not a folder - parameter folderName and documentName implie folder is a Folder");
+                        + "] is not a folder");
+            }
             List<CmisObject> listOfCmisObject = new ArrayList<>();
             final ItemIterable<CmisObject> documents = folder.getChildren();
             Pattern pattern = null;
@@ -58,6 +63,7 @@ public class CmisSourceAccess {
                 try {
                     pattern = Pattern.compile(cmisInput.getFilter());
                 } catch (Exception e) {
+                    logger.error("Filter[{}] bad expression", cmisInput.getFilter(),e);
                     throw new ConnectorException(CmisError.BAD_EXPRESSION, "Bad regex expression [" + cmisInput.getFilter() + "]");
 
                 }

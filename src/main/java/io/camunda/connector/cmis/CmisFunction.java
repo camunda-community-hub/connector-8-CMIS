@@ -48,6 +48,10 @@ import java.util.stream.Collectors;
         CmisInput.ERROR_IF_NOT_EXIST,
         CmisInput.FOLDER_ID,
         CmisInput.SOURCE_FILE,
+        CmisInput.FOLDER_IDENTIFICATION,
+        CmisInput.FOLDER_IDENTIFICATION_PATH,
+        CmisInput.FOLDER_IDENTIFICATION_ID,
+
         CmisInput.ABSOLUTE_FOLDER_NAME,
         CmisInput.DOCUMENT_NAME,
         CmisInput.CMIS_TYPE,

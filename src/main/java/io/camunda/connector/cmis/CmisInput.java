@@ -33,8 +33,11 @@ public class CmisInput implements CherryInput {
     public static final String STORAGE_DEFINITION = "storageDefinition";
     public static final String STORAGE_DEFINITION_FOLDER_COMPLEMENT = "storageDefinitionComplement";
     public static final String STORAGE_DEFINITION_CMIS_COMPLEMENT = "storageDefinitionCmis";
-    public static final String ERROR_IF_NOT_EXIST = "ErrorIfNotExist";
+    public static final String ERROR_IF_NOT_EXIST = "errorIfNotExist";
     public static final String FOLDER_ID = "folderId";
+
+
+
     /**
      * Upload file
      * The file maybe in a FileStorage, or a Camunda document
@@ -53,7 +56,6 @@ public class CmisInput implements CherryInput {
     /**
      * Download file
      */
-
     public static final String SOURCE_OBJECT = "sourceObject";
     public static final String SOURCE_OBJECT_V_ID = "objectId";
     public static final String SOURCE_OBJECT_V_ABSOLUTEPATHNAME = "absolutePathName";
@@ -63,6 +65,13 @@ public class CmisInput implements CherryInput {
     public static final String SOURCE_OBJECT_V_FOLDERCONTENT_LABEL = "Folder Content";
     public static final String CMIS_OBJECT_ID = "cmisObjectId";
     public static final String FILTER = "filter";
+
+    public static final String FOLDER_IDENTIFICATION = "folderIdentification";
+    public static final String FOLDER_IDENTIFICATION_V_PATH = "FOLDER";
+    public static final String FOLDER_IDENTIFICATION_V_ID = "ID";
+    public static final String FOLDER_IDENTIFICATION_PATH = "folderIdentificationPath";
+    public static final String FOLDER_IDENTIFICATION_ID = "folderIdentificationId";
+
     private final Logger logger = LoggerFactory.getLogger(CmisInput.class.getName());
     public Object cmisConnection;
     public String folderPath;
@@ -83,6 +92,10 @@ public class CmisInput implements CherryInput {
     public String versionLabel;
     public String sourceObject;
     public String filter;
+    public String folderIdentification;
+
+    public String folderIdentificationPath;
+    public String folderIdentificationId;
 
     //   public static final String ABSOLUTE_FOLDER_NAME = "absoluteFolderName";
     String cmisObjectId;
@@ -173,6 +186,18 @@ public class CmisInput implements CherryInput {
         return storageDefinitionCmis;
     }
 
+    public String getFolderIdentification() {
+        return folderIdentification;
+    }
+
+    public String getFolderIdentificationId() {
+        return folderIdentificationId;
+    }
+
+    public String getFolderIdentificationPath() {
+        return folderIdentificationPath;
+    }
+
     @JsonIgnore
     @Override
     public List<Map<String, Object>> getInputParameters() {
@@ -223,61 +248,3 @@ public class CmisInput implements CherryInput {
     }
 
 }
-
-    /*
-    Arrays.asList(
-        CmisCherryToolbox.CmisConnectionParameter,
-        RunnerParameter.getInstance(INPUT_FOLDER_PATH,
-            "Parent Folder Path",
-            String.class, RunnerParameter.Level.REQUIRED, "Folder path where folder will be created"),
-        RunnerParameter.getInstance(INPUT_FOLDER_NAME,
-            "Folder Name",
-            String.class, RunnerParameter.Level.REQUIRED, "Folder name to be created."),
-        RunnerParameter.getInstance(INPUT_RECURSIVE_NAME,
-                "Recursive Name",
-                Boolean.class, RunnerParameter.Level.OPTIONAL, "Recursive name: folder name can contains '/'")
-            .setVisibleInTemplate()
-            .setDefaultValue(Boolean.FALSE),
-        RunnerParameter.getInstance(INPUT_FOLDER_CMIS_TYPE,
-                "Folder CMIS Type",
-                String.class, RunnerParameter.Level.OPTIONAL, "When an CMIS object is created, a type is assigned")
-            .setDefaultValue("cmis:folder")
-
-
-
-    public static final RunnerParameter CmisConnectionParameter = RunnerParameter.getGsonInstance(
-        CmisCherryToolbox.INPUT_CMIS_CONNECTION, "Cmis connection", RunnerParameter.Level.REQUIRED,
-        "Connection to the CMIS repository", CmisCherryToolbox.CMIS_TEMPLATE_CONNECTION);
-
-
-    public static final RunnerParameter CmisSourceDocument = RunnerParameter.getInstance(
-            CmisSourceObjectInt.INPUT_SOURCE_OBJECT, "Source document", String.class, RunnerParameter.Level.REQUIRED,
-            "Define the source of document")
-        .addChoice(CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ID, "by document Id")
-        .addChoice(CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME, "By document folder/name")
-        .addChoice(CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_FOLDERCONTENT, "Content of the folder")
-        .setGroup(GROUP_SOURCE_OBJECT);
-
-    public static final RunnerParameter CmisObjectId = RunnerParameter.getInstance(
-            CmisSourceObjectInt.INPUT_CMIS_OBJECTID, "CMIS Object (Folder, Document) ID", String.class,
-            RunnerParameter.Level.REQUIRED, "CMIS ID to access the item")
-        .addCondition(CmisSourceObjectInt.INPUT_SOURCE_OBJECT, List.of(CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ID))
-        .setGroup(GROUP_SOURCE_OBJECT);
-
-    public static final RunnerParameter CmisFolderName = RunnerParameter.getInstance(
-            CmisSourceObjectInt.INPUT_CMIS_ABSOLUTE_PATH_NAME, "Absolute Object (Folder, Document) path name", String.class,
-            RunnerParameter.Level.REQUIRED,
-            "Contains / to access via a hierarchy of folder, like '/company/consulting/customers")
-        .addCondition(CmisSourceObjectInt.INPUT_SOURCE_OBJECT,
-            List.of(CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_ABSOLUTEPATHNAME,
-                CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_FOLDERCONTENT))
-        .setGroup(GROUP_SOURCE_OBJECT);
-
-    public static final RunnerParameter CmisFilter = RunnerParameter.getInstance(CmisSourceObjectInt.INPUT_FILTER,
-            "Item Name", String.class, ".*", RunnerParameter.Level.OPTIONAL,
-            "Filter (RegExp) to apply to collect object. [.*] mean all")
-        .addCondition(CmisSourceObjectInt.INPUT_SOURCE_OBJECT,
-            List.of(CmisSourceObjectInt.INPUT_SOURCE_OBJECT_V_FOLDERCONTENT))
-        .setGroup(GROUP_SOURCE_OBJECT);
-  }
-  */

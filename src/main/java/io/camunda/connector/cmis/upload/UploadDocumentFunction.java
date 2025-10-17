@@ -76,6 +76,7 @@ public class UploadDocumentFunction implements CmisSubFunction {
                 existingDocument = (Document) cmisConnection.getSession()
                         .getObjectByPath(parentFolder.getPath() + "/" + documentName);
             } catch (Exception var11) {
+                logger.debug("Error getting document Path[{}] Document[{}]", parentFolder.getPath(), documentName);
                 existingDocument = null;
             }
             Map<String, Object> properties = new HashMap();
@@ -126,11 +127,13 @@ public class UploadDocumentFunction implements CmisSubFunction {
             return cmisOutput;
 
         } catch (CmisConstraintException ce) {
+            logger.error("DocumentUpload [{}] constraint violated", ce);
             throw new ConnectorException(CmisError.CMIS_CONSTRAINT_EXCEPTION,
                     "Can't upload the document due to a constraint " + ce.getCode() + " " + ce.getMessage());
         } catch (ConnectorException ce) {
             throw ce;
         } catch (Exception e) {
+            logger.error("Upload error [{}]", e);
             throw new ConnectorException(CmisError.UPLOAD_TO_CMIS_ERROR, "Can't upload the content file");
         }
     } // end function

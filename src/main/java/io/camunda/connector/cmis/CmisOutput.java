@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CmisOutput implements CherryOutput {
     public static final String FOLDER_ID = "folderId";
-    public static final String LIST_OBJECT_DELETED = "ListObjectsDeleted";
+    public static final String LIST_OBJECT_NOTDELETED = "ListObjectsNotDeleted";
     public static final String LIST_FOLDERS_CREATED = "listFoldersCreated";
     public final static String LIST_CMIS_OBJECT = "listCmisObject";
     public static final String DOCUMENTID = "documentId";
@@ -18,7 +18,7 @@ public class CmisOutput implements CherryOutput {
     public static String DESCRIPTION_EXPLANATION = "`id`:CmisId, `name`: name of object, `description1 of the object, `isFolder` true if the object is a folder";
     public String getOutputFolderIdOutput;
     public String folderId;
-    public List<String> listObjectsDeleted;
+    public List<String> ListObjectsNotDeleted;
     public List<CmisOutput.CmisObjectDescription> listFoldersCreated;
     public List<CmisObjectDescription> listCmisObject = new ArrayList<>();
     public String documentId;
