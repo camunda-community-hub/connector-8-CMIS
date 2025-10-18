@@ -2,135 +2,177 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.camunda.community</groupId>
-  <artifactId>zeebe-cherry-CMIS</artifactId>
-  <version>1.0.0</version>
+    <groupId>org.camunda.community</groupId>
+    <artifactId>CMIS</artifactId>
+    <version>1.0.0</version>
 
-  <properties>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.source>17</maven.compiler.source>
-
-    <zeebe.version>8.2.0</zeebe.version>
-    <zeebe-client.version>8.2.4</zeebe-client.version>
-    <connector-core.version>0.9.0</connector-core.version>
-    <connector-validation.version>0.9.0</connector-validation.version>
-
-    <cherry.version>3.0.0</cherry.version>
-    <filestorage.version>1.1.1</filestorage.version>
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 
-    <junit.jupiter.version>5.9.0</junit.jupiter.version>
-    <opensagres.version>2.0.3</opensagres.version>
-  </properties>
+        <!-- connector SDK version -->
+        <version.connector>8.7.8</version.connector>
+        <version.chemistry>1.1.0</version.chemistry>
 
-  <dependencies>
-    <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>spring-zeebe-starter</artifactId>
-      <version>${zeebe.version}</version>
-    </dependency>
+        <version.opensagres>2.0.4</version.opensagres>
+        <version.filestorage>2.2.0</version.filestorage>
 
-    <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>zeebe-client-java</artifactId>
-      <version>${zeebe-client.version}</version>
-    </dependency>
+        <!-- external libraries -->
+        <version.assertj>3.27.3</version.assertj>
+        <version.junit-jupiter>5.12.1</version.junit-jupiter>
+        <version.mockito>5.16.1</version.mockito>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
 
-
-    <!-- Accept Camunda Connector -->
-    <dependency>
-      <groupId>io.camunda.connector</groupId>
-      <artifactId>connector-core</artifactId>
-      <version>${connector-core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.camunda.connector</groupId>
-      <artifactId>connector-validation</artifactId>
-      <version>${connector-core.version}</version>
-    </dependency>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version> <!-- Example: set your intended version -->
+    </parent>
 
 
-    <!-- Cherry Framework -->
-    <dependency>
-      <groupId>org.camunda.community</groupId>
-      <artifactId>zeebe-cherry-framework</artifactId>
-      <version>${cherry.version}</version>
-    </dependency>
-    <!-- fileStorage -->
-    <dependency>
-      <groupId>io.camunda.filestorage</groupId>
-      <artifactId>filestorage</artifactId>
-      <version>${filestorage.version}</version>
-    </dependency>
-    <!-- JSON LocalDateTime -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.13.3</version>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.camunda.connector</groupId>
+            <artifactId>connector-core</artifactId>
+            <version>${version.connector}</version>
+            <scope>provided</scope>
+        </dependency>
 
 
-    <dependency>
-      <groupId>org.camunda.community</groupId>
-      <artifactId>zeebe-cherry-framework</artifactId>
-      <version>${cherry.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>io.camunda.filestorage</groupId>
+            <artifactId>filestorage</artifactId>
+            <version>${version.filestorage}</version>
+        </dependency>
 
-    <!-- fileStorage -->
-    <dependency>
-      <groupId>io.camunda.filestorage</groupId>
-      <artifactId>filestorage</artifactId>
-      <version>${filestorage.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.chemistry.opencmis</groupId>
+            <artifactId>chemistry-opencmis-client-impl</artifactId>
+            <version>${version.chemistry}</version>
+        </dependency>
 
-    <!-- tests -->
-    <dependency>
-      <groupId>io.zeebe</groupId>
-      <artifactId>zeebe-worker-java-testutils</artifactId>
-      <version>8.0.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.jupiter.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.jupiter.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>io.camunda.connector</groupId>
+            <artifactId>element-template-generator-core</artifactId>
+            <version>${version.connector}</version>
+        </dependency>
+
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>io.camunda.connector</groupId>
+            <artifactId>connector-test</artifactId>
+            <version>${version.connector}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${version.junit-jupiter}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${version.mockito}</version>
+            <scope>test</scope>
+        </dependency>
 
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.2.0</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>16</source>
-          <target>16</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+        <!-- for testing connectors locally in bundle with runtime -->
+        <dependency>
+            <groupId>io.camunda.connector</groupId>
+            <artifactId>spring-boot-starter-camunda-connectors</artifactId>
+            <version>${version.connector}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- to generate the element-template -->
+        <dependency>
+            <groupId>io.camunda.community</groupId>
+            <artifactId>zeebe-cherry-runtime</artifactId>
+            <version>3.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <repositories>
+
+
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>connectors</id>
+            <name>Connectors Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors/</url>
+        </repository>
+
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>connectors-snapshots</id>
+            <name>Connectors Snapshot Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors-snapshots/</url>
+        </repository>
+
+
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>connectors</id>
+            <name>Connectors Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors/</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>connectors-snapshots</id>
+            <name>Connectors Snapshot Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors-snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 
 </project>

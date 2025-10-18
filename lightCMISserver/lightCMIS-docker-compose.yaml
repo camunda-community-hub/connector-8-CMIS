@@ -1,0 +1,11 @@
+services:
+
+  cmis-server:
+    image: exoplatform/lightweightcmisserver
+    container_name: LightWeightCMIS
+    ports:
+      - target: 8080
+        published: 8099
+        protocol: tcp
+        mode: host
+    restart: unless-stopped
