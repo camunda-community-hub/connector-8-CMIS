@@ -99,7 +99,7 @@ public class ListCmisObjectFunction implements CmisSubFunction {
 
     @Override
     public String getSubFunctionDescription() {
-        return "List all objects found in a folder";
+        return "List all objects found in a folder. This is not a recursive list, just one level.";
     }
 
     @Override

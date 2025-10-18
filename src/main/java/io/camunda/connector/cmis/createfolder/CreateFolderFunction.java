@@ -140,7 +140,9 @@ public class CreateFolderFunction implements CmisSubFunction {
 
     @Override
     public String getSubFunctionDescription() {
-        return "Create a folder in the CMIS repository, under the folder parent";
+        return "Create a folder in the CMIS repository, under the folder parent. If " + CmisInput.RECURSIVE_NAME
+                + " is true, the folderName may contain /, and then multiple folders can be created recursively"
+                + " For example, for 'usa/california/contracosta/Kensington', 4 folders will be created.";
     }
 
     @Override

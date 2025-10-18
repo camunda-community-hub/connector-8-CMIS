@@ -107,7 +107,7 @@ public class CmisFunction implements OutboundConnectorFunction, CherryConnector 
     @Override
     public String getDescription() {
         return "Different CMIS functions available: " + getListSubFunctions().stream()
-                .map(CmisSubFunction::getSubFunctionDescription)
+                .map(CmisSubFunction::getSubFunctionName)
                 .collect(Collectors.joining(","));
     }
 

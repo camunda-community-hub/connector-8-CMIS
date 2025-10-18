@@ -38,10 +38,10 @@ public class DeleteFolderFunction implements CmisSubFunction {
         String folderId = cmisInput.getFolderIdentificationId();
         String folderIdentification = cmisInput.getFolderIdentification();
         CmisObject cmisObject = null;
-        if ( CmisInput.FOLDER_IDENTIFICATION_V_PATH.equals(folderIdentification)){
+        if (CmisInput.FOLDER_IDENTIFICATION_V_PATH.equals(folderIdentification)) {
             if (folderPath != null)
                 cmisObject = cmisConnection.getObjectByPath(folderPath);
-        } else if ( CmisInput.FOLDER_IDENTIFICATION_V_ID.equals(folderIdentification)) {
+        } else if (CmisInput.FOLDER_IDENTIFICATION_V_ID.equals(folderIdentification)) {
             if (folderId != null)
                 cmisObject = cmisConnection.getObjectById(folderId);
         }
@@ -74,18 +74,18 @@ public class DeleteFolderFunction implements CmisSubFunction {
                         RunnerParameter.Level.REQUIRED, "Cmis Connection. JSON like {\"url\":\"http://localhost:8099/cmis/browser\",\"userName\":\"test\",\"password\":\"test\"}"),
 
                 RunnerParameter.getInstance(CmisInput.FOLDER_IDENTIFICATION, "Identify the folder to delete", String.class,
-                        RunnerParameter.Level.REQUIRED, "Identify the cluster")
+                                RunnerParameter.Level.REQUIRED, "Identify the cluster")
                         .addChoice(CmisInput.FOLDER_IDENTIFICATION_V_PATH, "Folder Path")
                         .addChoice(CmisInput.FOLDER_IDENTIFICATION_V_ID, "Folder Id")
                 ,
 
                 RunnerParameter.getInstance(CmisInput.FOLDER_IDENTIFICATION_PATH, "Folder Path to delete", String.class,
-                        RunnerParameter.Level.REQUIRED, "Folder path to delete. Contains '/' to select sub folder") //
-                        .addCondition(CmisInput.FOLDER_IDENTIFICATION, List.of(CmisInput.FOLDER_IDENTIFICATION_V_PATH) ),
+                                RunnerParameter.Level.REQUIRED, "Folder path to delete. Contains '/' to select sub folder") //
+                        .addCondition(CmisInput.FOLDER_IDENTIFICATION, List.of(CmisInput.FOLDER_IDENTIFICATION_V_PATH)),
 
                 RunnerParameter.getInstance(CmisInput.FOLDER_IDENTIFICATION_ID, "Folder ID to delete", String.class,
-                        RunnerParameter.Level.REQUIRED, "Folder Id to reference the folder to delete") //
-                .addCondition(CmisInput.FOLDER_IDENTIFICATION, List.of(CmisInput.FOLDER_IDENTIFICATION_V_ID) ),
+                                RunnerParameter.Level.REQUIRED, "Folder Id to reference the folder to delete") //
+                        .addCondition(CmisInput.FOLDER_IDENTIFICATION, List.of(CmisInput.FOLDER_IDENTIFICATION_V_ID)),
 
                 RunnerParameter.getInstance(CmisInput.ERROR_IF_NOT_EXIST, "Error if not exist", Boolean.class,
                                 RunnerParameter.Level.OPTIONAL, "Throw a BPMN Error if the object does not exist") //
@@ -115,7 +115,7 @@ public class DeleteFolderFunction implements CmisSubFunction {
 
     @Override
     public String getSubFunctionDescription() {
-        return "Delete a folder in the CMIS repository";
+        return "Delete a folder in the CMIS repository. This is a recursive deletion: folder and all the content of the folder will be deleted. It returns the objects it could not destroy.";
     }
 
     @Override

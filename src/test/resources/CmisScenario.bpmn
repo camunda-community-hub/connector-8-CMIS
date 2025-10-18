@@ -108,6 +108,7 @@
           <zeebe:input source="FOLDER" target="folderIdentification" />
           <zeebe:input source="/test/ohio" target="folderIdentificationPath" />
           <zeebe:output source="= result.ListObjectsDeleted" target="deleteFolder.ohioPath" />
+          <zeebe:output source="= result.ListObjectsNotDeleted" target="NotDeletedObjects.ohio" />
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
@@ -128,6 +129,7 @@
           <zeebe:input source="FOLDER" target="folderIdentification" />
           <zeebe:input source="/test" target="folderIdentificationPath" />
           <zeebe:output source="= result.ListObjectsDeleted" target="deleteFolder.testPath" />
+          <zeebe:output source="= result.ListObjectsNotDeleted" target="NotDeletedObjects.test" />
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />

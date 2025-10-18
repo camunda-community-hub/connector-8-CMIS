@@ -37,7 +37,6 @@ public class CmisInput implements CherryInput {
     public static final String FOLDER_ID = "folderId";
 
 
-
     /**
      * Upload file
      * The file maybe in a FileStorage, or a Camunda document
@@ -228,7 +227,7 @@ public class CmisInput implements CherryInput {
 
             StorageDefinition storageDefinitionObj = null;
             // Attention, it may be an empty string due to the modeler which not like null value
-            if (jsonStorageDefinition != null && ! jsonStorageDefinition.toString().trim().isEmpty() ) {
+            if (jsonStorageDefinition != null && !jsonStorageDefinition.toString().trim().isEmpty()) {
                 storageDefinitionObj = StorageDefinition.getFromObject(jsonStorageDefinition);
                 return storageDefinitionObj;
             }

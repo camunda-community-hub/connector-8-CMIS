@@ -47,7 +47,10 @@ public class CheckConnectionFunction implements CmisSubFunction {
 
     @Override
     public List<RunnerParameter> getInputsParameter() {
-        return Collections.emptyList();
+        return List.of(
+                new RunnerParameter(CmisInput.CMIS_CONNECTION, "CMIS Connection", String.class,
+                        RunnerParameter.Level.REQUIRED, "Cmis Connection. JSON like {\"url\":\"http://localhost:8099/cmis/browser\",\"userName\":\"test\",\"password\":\"test\"}")
+        );
     }
 
     @Override
@@ -69,7 +72,7 @@ public class CheckConnectionFunction implements CmisSubFunction {
 
     @Override
     public String getSubFunctionDescription() {
-        return "Check the connectin to CMIS";
+        return "Check the connection to CMIS";
     }
 
     @Override

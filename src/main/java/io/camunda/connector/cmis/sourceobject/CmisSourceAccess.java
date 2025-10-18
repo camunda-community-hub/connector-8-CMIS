@@ -63,7 +63,7 @@ public class CmisSourceAccess {
                 try {
                     pattern = Pattern.compile(cmisInput.getFilter());
                 } catch (Exception e) {
-                    logger.error("Filter[{}] bad expression", cmisInput.getFilter(),e);
+                    logger.error("Filter[{}] bad expression", cmisInput.getFilter(), e);
                     throw new ConnectorException(CmisError.BAD_EXPRESSION, "Bad regex expression [" + cmisInput.getFilter() + "]");
 
                 }

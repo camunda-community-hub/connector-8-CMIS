@@ -108,8 +108,7 @@ public class DeleteDocumentFunction implements CmisSubFunction {
                 CmisError.BAD_EXPRESSION, CmisError.BAD_EXPRESSION_EXPLANATION,
                 CmisError.NOT_A_FOLDER, CmisError.NOT_A_FOLDER_EXPLANATION,
                 CmisError.UNKNOWN_TYPE, CmisError.UNKNOWN_TYPE_EXPLANATION,
-                CmisError.FOLDER_NOT_EXIST, CmisError.FOLDER_NOT_EXIST_EXPLANATION,
-                CmisError.DOCUMENT_NOT_EXIST, CmisError.DOCUMENT_NOT_EXIST_EXPLANATION);
+                CmisError.FOLDER_NOT_EXIST, CmisError.FOLDER_NOT_EXIST_EXPLANATION);
     }
 
     @Override
@@ -120,7 +119,7 @@ public class DeleteDocumentFunction implements CmisSubFunction {
 
     @Override
     public String getSubFunctionDescription() {
-        return "Delete a document";
+        return "Delete a document. A Cmis ObjectID is provided and will be deleted.";
     }
 
     @Override

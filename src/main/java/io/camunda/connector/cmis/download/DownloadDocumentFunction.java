@@ -159,7 +159,7 @@ public class DownloadDocumentFunction implements CmisSubFunction {
 
     @Override
     public String getSubFunctionDescription() {
-        return "Download a file from the CMIS folder and store it on a FileStorage";
+        return "Download a file from the CMIS folder and store it on a FileStorage. See the FileStorage library. The FileStorage maybe the Camunda file storage.";
     }
 
     @Override
