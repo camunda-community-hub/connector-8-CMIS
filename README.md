@@ -1,13 +1,11 @@
 # camunda-8-connector-cmis
 
-Connector to execution operations on a CMIS (Content Management Interoperability Service) repository
+Connector to execute operations on a CMIS (Content Management Interoperability Services) repository. This protocol is supported by various products, such as Alfresco and Documentum, for storing and managing documents.
 
 ![CmisScenario.png](doc/CmisScenario.png)
 
 
-CMIS stand for Content Management Interoperability Services. This protocol is used by different product (Alfresco, Documentum) to store document.
-
-The connector has different function:
+The connector has different functions:
 * Create folder
 * Upload a document from a FileStorage or a Camunda Document to the CMIS system
 * Download a document from CMIS to a FileStorage or a Camunda Document
