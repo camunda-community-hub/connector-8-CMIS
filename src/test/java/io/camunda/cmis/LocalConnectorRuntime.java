@@ -1,4 +1,4 @@
-package io.camunda.csv;
+package io.camunda.cmis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

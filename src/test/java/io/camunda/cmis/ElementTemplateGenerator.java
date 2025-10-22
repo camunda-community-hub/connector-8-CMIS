@@ -1,4 +1,4 @@
-package io.camunda.csv;
+package io.camunda.cmis;
 
 import io.camunda.cherry.definition.RunnerDecorationTemplate;
 
