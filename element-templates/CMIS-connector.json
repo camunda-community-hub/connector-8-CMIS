@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-  "name": "CMIS function",
+  "name": "CMISFunction",
   "id": "io.camunda.connector.cmis.CmisFunction",
   "description": "Different CMIS functions available: CreateFolder,DeleteDocument,DeleteFolder,DownloadDocument,ListObjects,UploadDocument,CheckConnection",
   "documentationRef": "https://docs.camunda.io/docs/components/modeler/web-modeler/connectors/available-connectors/template/",
